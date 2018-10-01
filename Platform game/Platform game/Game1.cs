@@ -17,6 +17,7 @@ namespace Platform_game
         TimeSpan FireTime = new TimeSpan();
         TimeSpan launchedTime = new TimeSpan();
         TimeSpan bossfire = new TimeSpan();
+        TimeSpan second = new TimeSpan();
         List<Fireball> fireball = new List<Fireball>();
         List<Snakeman> enemy = new List<Snakeman>();
         List<Platform> platform = new List<Platform>();
@@ -27,6 +28,8 @@ namespace Platform_game
         background Failure;
         background Begining;
         Color bosscolor = Color.White;
+        Color playercolor = Color.White;
+        int damagetaken = 0;
         bool Jumping = false;
         int MoveDown = 30;
         int Moveup = -30;
@@ -44,6 +47,7 @@ namespace Platform_game
         bool BossFight = false;
         bool BossMove = true;
         bool playermoving = false;
+        bool playershield = true;
         //bool platformMove = true;
         bool platformspawn = false;
         int enemySpawnSpeed = 2000;
@@ -96,6 +100,7 @@ namespace Platform_game
             
             enemySpawn += gameTime.ElapsedGameTime;
             FireTime += gameTime.ElapsedGameTime;
+            second += gameTime.ElapsedGameTime;
             if (launched)
             {
                 launchedTime += gameTime.ElapsedGameTime;
@@ -107,6 +112,11 @@ namespace Platform_game
             if (playermoving == true&&bossfire!=TimeSpan.Zero)
             {
                 bossfire = TimeSpan.Zero;
+            }
+            if (second >= TimeSpan.FromMilliseconds(1000))
+            {
+                second = TimeSpan.Zero;
+                damagetaken = 0;
             }
             
             for (int i = 0; i < enemy.Count;i++)
@@ -213,7 +223,8 @@ namespace Platform_game
                 plane.Clear();
                 player.position.Y = GraphicsDevice.Viewport.Height - 350;
                 player.position.X = GraphicsDevice.Viewport.Width - 440;
-                
+                boss.position.Y = 1000000;
+                boss.health = 100;
             }
             
             if (Gamestart == false&&ks.IsKeyDown(Keys.Space))
@@ -261,10 +272,7 @@ namespace Platform_game
                     {
                         fire.Add(new Sprite(Content.Load<Texture2D>("FireballLeft"), new Vector2(0, GraphicsDevice.Viewport.Height - 20), Color.White));
                     }
-                    if (OnPlatform&&health!=100)
-                    {
-                        health+=5;
-                    }
+                    
                     FireTime = TimeSpan.Zero;
                 }
                 if (ks.IsKeyDown(Keys.Space) && prevks.IsKeyUp(Keys.Space)&&fire.Count>=1||rage)
@@ -541,6 +549,7 @@ namespace Platform_game
                     if (player.Hit(fireball[i].hitbox) && fireball[i].IsPLayer == false && rage != true)
                     {
                         health -= 10;
+                        damagetaken += 10;
                         fireball.Remove(fireball[i]);
                         break;
                     }
@@ -657,7 +666,14 @@ namespace Platform_game
                     launched = false;
                 }
 
-                
+                if (playershield&&health!=100)
+                {
+                    health += 1;
+                }
+                if (damagetaken >= 50)
+                {
+                    playershield = false;
+                }
                 
             }
             
@@ -696,28 +712,25 @@ namespace Platform_game
                     spriteBatch.DrawString(font, "" + boss.health + "", new Vector2(boss.smallHitbox.X + 20, boss.smallHitbox.Y - 20), Color.White);
 
                 }
+                if (playershield)
+                {
+                    playercolor = Color.Blue;
+                }
+                if (rage)
+                {
+                    playercolor = Color.Red;
+                }
+                if (!playershield&&!rage)
+                {
+                    playercolor = Color.White;
+                }
                 if (FacingLeft)
                 {
-                    if (rage)
-                    {
-                        player.Draw2(spriteBatch, Content.Load<Texture2D>("PlayerL"), Color.Red);
-                    }
-                    else
-                    {
-                        player.Draw2(spriteBatch, Content.Load<Texture2D>("PlayerL"), Color.White);
-                    }
-
+                        player.Draw2(spriteBatch, Content.Load<Texture2D>("PlayerL"), playercolor);
                 }
                 if (FacingRight)
-                {
-                    if (rage)
-                    {
-                        player.Draw2(spriteBatch, Content.Load<Texture2D>("playerR"), Color.Red);
-                    }
-                    else
-                    {
-                        player.Draw2(spriteBatch, Content.Load<Texture2D>("playerR"), Color.White);
-                    }
+                {    
+                        player.Draw2(spriteBatch, Content.Load<Texture2D>("playerR"), playercolor);
                 }
                 for (int i = 0; i < platform.Count; i++)
                 {
