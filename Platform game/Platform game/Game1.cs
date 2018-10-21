@@ -24,6 +24,7 @@ namespace Platform_game
         List<Platform> platform = new List<Platform>();
         List<Sprite> fire = new List<Sprite>();
         List<FlyingEnemy> plane = new List<FlyingEnemy>();
+        List<Sprite> Warning = new List<Sprite>();
         Boss boss;
         background Background;
         background Failure;
@@ -61,7 +62,8 @@ namespace Platform_game
         bool makeenemies = true;
         bool BossAirstrike = false;
         int bossfirelocation = 0;
-        
+        bool BossAttack = false;
+        bool BossLazerbeam = false;
         SpriteFont font;
         public Game1()
         {
@@ -117,11 +119,20 @@ namespace Platform_game
             {
                 bossfire += gameTime.ElapsedGameTime;
             }
-            if (bossfire >= TimeSpan.FromMilliseconds(4500)&&!BossAirstrike)
+            if (bossfire >= TimeSpan.FromMilliseconds(4500)&&!BossAttack)
             {
-                BossAirstrike = true;
+                int ran = random.Next(0, 2);
+                if (ran == 0)
+                {
+                    BossAirstrike = true;
+                }
+                if (ran == 1)
+                {
+                    BossLazerbeam = true;
+                }
                 bossfire = TimeSpan.Zero;
-            }  
+            }
+            
             if (second >= TimeSpan.FromMilliseconds(1000))
             {
                 second = TimeSpan.Zero;
@@ -131,15 +142,24 @@ namespace Platform_game
                 }
                 
             }
-            if (BossAirstrike)
+            if (BossAirstrike||BossLazerbeam)
             {
                 if (bossfire>=TimeSpan.FromMilliseconds(2000))
                 {
                     BossAirstrike = false;
+                    BossLazerbeam = false;
+                    Warning.Clear();
                     bossfire = TimeSpan.Zero;
                 }
             }
-            
+            if (BossAirstrike)
+            {
+                BossAttack = true;
+            }
+            else
+            {
+                BossAttack = false;
+            }
             for (int i = 0; i < enemy.Count;i++)
             {
                 enemy[i].fireTime += gameTime.ElapsedGameTime;
@@ -210,7 +230,7 @@ namespace Platform_game
             }
             if (fire.Count >= 1)
             {
-                if (fire[fire.Count - 1].position.X > GraphicsDevice.Viewport.Width)
+                if (fire[fire.Count - 1].position.X - fire[fire.Count-1].hitbox.Width> GraphicsDevice.Viewport.Width)
                 {
                     rage = true;
                 }
@@ -247,6 +267,10 @@ namespace Platform_game
                 playershield = true;
                 damagetaken = 0;
                 BossMove = false;
+                Warning.Clear();
+                BossAirstrike = false;
+                BossLazerbeam = false;
+                BossAttack = false;
             }
             
             if (Gamestart == false&&ks.IsKeyDown(Keys.Space))
@@ -297,7 +321,17 @@ namespace Platform_game
                     
                     FireTime = TimeSpan.Zero;
                 }
-                if (ks.IsKeyDown(Keys.Space) && prevks.IsKeyUp(Keys.Space)&&fire.Count>=1||rage)
+                if (rage == true)
+                {
+                    int ran = random.Next(0, 1000);
+                    fire.Remove(fire[fire.Count - 1]);
+                    fireball.Add(new Fireball(Content.Load <Texture2D>("FireballDown"), new Vector2(ran, -10), Color.White, false, false, true, true));
+                    if (fire.Count <= 1)
+                    {
+                       rage = false;
+                    } 
+                }
+                if (ks.IsKeyDown(Keys.Space) && prevks.IsKeyUp(Keys.Space)&&fire.Count>=1)
                 {
                     if (FacingLeft)
                     {
@@ -371,24 +405,14 @@ namespace Platform_game
                 }
                 for (int i = 0; i < platform.Count; i++)
                 {
-                    /*if (platformMove == true)
-                    {
-                        platform[i].Move(GraphicsDevice.Viewport.Width);
-                    }
-                    if (OnPlatform)
-                    {
-                        player.position.X += platform[i].movespeed;
-                    }*/
+                    
                     platform[i].Update();
                     if (player.Hit(platform[i].bottom))
                     {
                         Jumping = false;
                         break;
                     }
-                    //if (player.Hit(platform[i].bottom)&&player.position.X < platform[i].bottom.X&&OnPlatform==false)
-                    //{
-                      //  player.position.X -= 10;
-                    //}
+                    
                     if (player.Hit(platform[i].top)&&OnPlatform == false)
                     {
                         ground = true;
@@ -411,7 +435,7 @@ namespace Platform_game
                     OnPlatform = false;
                     ground = false;
                 }
-                if (enemySpawn > TimeSpan.FromMilliseconds(enemySpawnSpeed)&&rage == false&&BossFight == false&&makeenemies)
+                if (enemySpawn > TimeSpan.FromMilliseconds(enemySpawnSpeed)&&!BossFight&&makeenemies)
                 {
                     enemySpawn = TimeSpan.Zero;
                     int ran = random.Next(0, 21);
@@ -608,7 +632,7 @@ namespace Platform_game
                 }
 
 
-
+                boss.SmallHitbox();
                 if (BossFight)
                 {
                     BossMove = true;
@@ -633,11 +657,15 @@ namespace Platform_game
                         {
                             fireball.Add(new Fireball(Content.Load<Texture2D>("FireballDown"), new Vector2(bossfirelocation + i*10, -500), Color.White, false, false, true, false));
                         }
-                        
+                        Warning.Add(new Sprite(Content.Load<Texture2D>("Warning"), new Vector2(bossfirelocation, 0), Color.White));
                     }
                     if (!BossAirstrike)
                     {
                         bossfirelocation = player.hitbox.X;
+                    }
+                    if (BossLazerbeam)
+                    {
+
                     }
                     //boss.Sides(GraphicsDevice.Viewport.Width);
                     if (BossMove)
@@ -748,16 +776,22 @@ namespace Platform_game
             if (Alive&&Gamestart)
             {
                 Background.Draw(spriteBatch);
-                    if (boss.Left)
-                    {
-                        boss.Draw(spriteBatch, Content.Load<Texture2D>("BossL"), bosscolor);
-                    }
-                    if (boss.Right)
-                    {
-                        boss.Draw(spriteBatch, Content.Load<Texture2D>("BossR"), bosscolor);
-                    }
-                    spriteBatch.DrawString(font, "" + boss.health + "", new Vector2(boss.smallHitbox.X + 20, boss.smallHitbox.Y - 20), Color.White);
-
+                if (boss.Left)
+                {
+                    boss.Draw(spriteBatch, Content.Load<Texture2D>("BossL"), bosscolor);
+                }
+                if (boss.Right)
+                {
+                    boss.Draw(spriteBatch, Content.Load<Texture2D>("BossR"), bosscolor);
+                }
+                spriteBatch.DrawString(font, "" + boss.health + "", new Vector2(boss.smallHitbox.X + 20, boss.smallHitbox.Y - 20), Color.White);
+                
+               
+                for (int i = 0; i < Warning.Count;i++)
+                {
+                    Warning[i].Draw(spriteBatch);
+                }
+                
                 if (playershield&&!playershieldblinking)
                 {
                     playercolor = Color.Blue;
@@ -806,18 +840,8 @@ namespace Platform_game
                 }
                
                 spriteBatch.DrawString(font, "Health = " + health + "", new Vector2(100, GraphicsDevice.Viewport.Height - 40), Color.White);
-                spriteBatch.DrawString(font, "Enemy's = " + enemy.Count + "", new Vector2(300, GraphicsDevice.Viewport.Height - 40), Color.White);
-                spriteBatch.DrawString(font, "Fire = " + fire.Count + "", new Vector2(200, GraphicsDevice.Viewport.Height - 40), Color.White);
-                spriteBatch.DrawString(font, "Score = " + score + "", new Vector2(400, GraphicsDevice.Viewport.Height - 40), Color.White);
-                spriteBatch.DrawString(font, "Boss Pos. = " + boss.position.X + "", new Vector2(800, GraphicsDevice.Viewport.Height - 40), Color.White);
-                if (playershield)
-                {
-                    spriteBatch.DrawString(font, "DamageTaken = " + damagetaken + "", new Vector2(500, GraphicsDevice.Viewport.Height - 40), Color.White);
-                }
-                else
-                {
-                    spriteBatch.DrawString(font, "DamageTaken = over 9000!", new Vector2(500, GraphicsDevice.Viewport.Height - 40), Color.White);
-                }
+                spriteBatch.DrawString(font, "Score = " + score + "", new Vector2(200, GraphicsDevice.Viewport.Height - 40), Color.White);
+                spriteBatch.DrawString(font, "boss x = " + boss.position.X + " boss hitbox x = " + boss.smallHitbox.X + "", new Vector2(500, GraphicsDevice.Viewport.Height - 40), Color.White);
                 if (plane.Count >= 1)
                 {
                     spriteBatch.DrawString(font, "Plane 1 Health = " + plane[0].Health + "", new Vector2(800, GraphicsDevice.Viewport.Height - 40), Color.White);

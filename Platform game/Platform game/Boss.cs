@@ -50,7 +50,7 @@ namespace Platform_game
                 position.X = screensize - hitbox.Width;
             }
         }
-        public bool otherHit(Rectangle otherhitbox)
+        public void SmallHitbox()
         {
             smallHitbox = hitbox;
             if (Right)
@@ -63,6 +63,10 @@ namespace Platform_game
                 smallHitbox.Width = 100;
                 smallHitbox.X = hitbox.X + 117;
             }
+        }
+        public bool otherHit(Rectangle otherhitbox)
+        {
+            
             if (smallHitbox.Intersects(otherhitbox))
             {
                 return true;
