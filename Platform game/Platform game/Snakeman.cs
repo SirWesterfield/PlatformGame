@@ -10,6 +10,7 @@ namespace Platform_game
 {
     class Snakeman : Sprite
     {
+        //public bool PlayerOnTop;
         public bool Left;
         public bool Right;
         public bool ground;
@@ -18,9 +19,12 @@ namespace Platform_game
         public int downspeed;
         public bool move;
         public bool attack;
+        //public Rectangle BottomHitbox;
         public TimeSpan fireTime;
         Rectangle bigHitbox;
-        public Snakeman(Texture2D image, Vector2 position, Color color, bool Left, bool Right, int upspeed, int downspeed, bool move, bool attack)
+        public Rectangle otherHitbox;
+        public bool OnPlatform;
+        public Snakeman(Texture2D image, Vector2 position, Color color, bool Left, bool Right, int upspeed, int downspeed, bool move, bool attack, bool OnPlatform)
             :base(image,position,color)
         {
             this.Left = Left;
@@ -29,6 +33,8 @@ namespace Platform_game
             this.downspeed = downspeed;
             this.move = move;
             this.attack = attack;
+            this.OnPlatform = OnPlatform;
+           //this.PlayerOnTop = PlayerOnTop;
         }
         public void Sides(int screensize)
         {
@@ -82,11 +88,15 @@ namespace Platform_game
             }
             return false;
         }
-        public void Ground (int screensize)
+        public void Ground (int screensize, Rectangle otherHitbox)
         {
             if (hitbox.Y +hitbox.Height > screensize&&jumping == false)
             {
                 position.Y = screensize - hitbox.Height;
+                ground = true;
+            }
+            if (hitbox.Intersects(otherHitbox))
+            {
                 ground = true;
             }
         }
@@ -104,9 +114,7 @@ namespace Platform_game
         }
         public bool otherHit(Rectangle otherhitbox)
         {
-            bigHitbox = hitbox;
-            bigHitbox.Width += 250;
-            bigHitbox.X = hitbox.X - 90;
+            
             if (bigHitbox.Intersects(otherhitbox))
             {
                 return true;
@@ -115,6 +123,18 @@ namespace Platform_game
             {
                 return false;
             }
+        }
+        public void UpdateHitbox ()
+        {
+            bigHitbox = hitbox;
+            bigHitbox.Width += 250;
+            bigHitbox.X = hitbox.X - 90;
+            otherHitbox = hitbox;
+            otherHitbox.Y = hitbox.Y + 11;
+            otherHitbox.Height = hitbox.Height - 11;
+            
+            
+            
         }
 
     }

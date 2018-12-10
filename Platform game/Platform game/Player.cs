@@ -10,11 +10,7 @@ namespace Platform_game
 {
     class Player : Sprite
     {
-        public enum PlayerState
-        {
-            Running,
-            Jumping
-        }
+        public Rectangle otherHitbox;
         public Player(Texture2D image, Vector2 position, Color color)
             :base(image, position, color)
         {
@@ -25,18 +21,18 @@ namespace Platform_game
         {
             spritebatch.Draw(player, position, chromatic);
         }
-        public void MoveRight (int screensize)
+        public void MoveRight (int screensize, int movespeed, Rectangle platfromrightside)
         {
-            if (position.X + hitbox.Width < screensize)
+            if (position.X + hitbox.Width < screensize /*&& hitbox.Intersects(platfromrightside) == false*/)
             {
-                position.X += 5;
+                position.X += movespeed;
             }
         }
-        public void MoveLeft()
+        public void MoveLeft(int movesspeed, Rectangle platformleftside)
         {
-            if (position.X > 0)
+            if (position.X > 0/*&&hitbox.Intersects(platformleftside)==false*/)
             {
-                position.X -= 5;
+                position.X -= movesspeed;
             }
         }
         public void MoveUp(int Movespeed)
@@ -69,5 +65,12 @@ namespace Platform_game
                 return false;
             }
         }
+        public bool UpdateotherHitbox ()
+        {
+            otherHitbox = hitbox;
+            otherHitbox.Y = hitbox.Y + 11; 
+            return false;
+        }
+
     }
 }

@@ -12,8 +12,9 @@ namespace Platform_game
     {
         public Rectangle bottom;
         public Rectangle top;
+        public Rectangle LeftSide;
+        public Rectangle RightSide;
         public int movespeed;
-        int Direction = 1;
         public Platform(Texture2D image, Vector2 position, Color color, int movespeed)
             : base(image, position, color)
         {
@@ -27,23 +28,18 @@ namespace Platform_game
             top.Y = hitbox.Top;
             top.X = hitbox.X;
             top.Width = hitbox.Width;
+            LeftSide = hitbox;
+            RightSide = hitbox;
+            LeftSide.X = hitbox.X + hitbox.Width;
+            LeftSide.Width = 1;
+            LeftSide.Y = hitbox.Y + 5;
+            LeftSide.Height = hitbox.Height-5;
+            RightSide.Width = 1;
+            
+            RightSide.Y = hitbox.Y + 5;
+            RightSide.Height = hitbox.Height - 5;
         }
-        public void Move(int screensizex)
-        {
-            if (Direction == 1)
-            {
-                position.X += movespeed;
-            }
-            if (Direction == -1)
-            {
-                position.X += movespeed;
-            }
-            if (position.X <= 0||position.X + hitbox.Width >= screensizex)
-            {
-                Direction *= -1;
-                movespeed *= -1;
-            }
-        }
+        
 
     }
 }
