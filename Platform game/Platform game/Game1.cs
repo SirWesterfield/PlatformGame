@@ -11,15 +11,15 @@ namespace Platform_game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
-       
+
         TimeSpan enemySpawn = new TimeSpan();
         TimeSpan FireTime = new TimeSpan();
-        TimeSpan launchedTime = new TimeSpan();     
+        TimeSpan launchedTime = new TimeSpan();
         TimeSpan bossfire = new TimeSpan();
         TimeSpan second = new TimeSpan();
         TimeSpan shieldblinking = new TimeSpan();
 
-        
+
         List<Fireball> fireball = new List<Fireball>();
         List<Snakeman> enemy = new List<Snakeman>();
         List<Platform> platform = new List<Platform>();
@@ -42,7 +42,7 @@ namespace Platform_game
         Bars ShieldBar;
         Color bosscolor = Color.White;
         Color playercolor = Color.White;
-        
+
         //int damagetaken = 0;
 
         bool Jumping = false;
@@ -68,8 +68,8 @@ namespace Platform_game
         bool playershield = true;
         bool platformspawn = false;
         int enemySpawnSpeed = 2000;
-        bool PlaneDown = false;    
-        bool launched = false;        
+        bool PlaneDown = false;
+        bool launched = false;
         bool playershieldblinking = false;
         bool playercolorchange = false;
         bool makeenemies = true;
@@ -78,6 +78,8 @@ namespace Platform_game
         bool BossAttack = false;
         bool BossLazerbeam = false;
         bool Bosschargelazer = false;
+        bool IsPlayerMoving = true;
+        bool playermove = true;
         //bool OnEnemy = false;
         int TurretMovement = 1;
         Rectangle Trolololololol;
@@ -105,13 +107,13 @@ namespace Platform_game
         {
             font = (Content.Load<SpriteFont>("font"));
             spriteBatch = new SpriteBatch(GraphicsDevice);
-            
+
             Begining = new background(Content.Load<Texture2D>("Start"), Vector2.One, Color.White, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
             Background = new background(Content.Load<Texture2D>("background"), Vector2.One, Color.White, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
             Failure = new background(Content.Load<Texture2D>("Failure"), Vector2.One, Color.White, new Rectangle(0, 0, GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height));
             //platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(GraphicsDevice.Viewport.Width - 440, GraphicsDevice.Viewport.Height - 250), Color.White, 1));
             player = new Player(Content.Load<Texture2D>("playerL"), new Vector2(GraphicsDevice.Viewport.Width - 440, GraphicsDevice.Viewport.Height - 350), Color.White);
-            boss = new Boss(Content.Load<Texture2D>("BossL"), new Vector2(-1000, GraphicsDevice.Viewport.Height - 395), Color.White, true, false, 20, -25,100);
+            boss = new Boss(Content.Load<Texture2D>("BossL"), new Vector2(-1000, GraphicsDevice.Viewport.Height - 395), Color.White, true, false, 20, -25, 100);
             TurretL = new PlayerSprite(Content.Load<Texture2D>("TurretL"), new Vector2(0, 0), Color.White);
             LegsL = new PlayerSprite(Content.Load<Texture2D>("LegsL"), new Vector2(0, 0), Color.White);
             TurretR = new PlayerSprite(Content.Load<Texture2D>("TurretR"), new Vector2(0, 0), Color.White);
@@ -129,22 +131,25 @@ namespace Platform_game
 
         protected override void Update(GameTime gameTime)
         {
-            
+            for (int i = 0; i < platform.Count; i++)
+            {
+                platform[i].Update();
+            }
             enemySpawn += gameTime.ElapsedGameTime;
             FireTime += gameTime.ElapsedGameTime;
             second += gameTime.ElapsedGameTime;
             shieldblinking += gameTime.ElapsedGameTime;
-            
+
             if (launched)
             {
                 launchedTime += gameTime.ElapsedGameTime;
             }
-            
+
             if (BossFight)
             {
                 bossfire += gameTime.ElapsedGameTime;
             }
-            if (bossfire >= TimeSpan.FromMilliseconds(4500)&&!BossAttack)
+            if (bossfire >= TimeSpan.FromMilliseconds(4500) && !BossAttack)
             {
                 int ran = random.Next(0, 2);
                 if (ran == 0)
@@ -157,11 +162,11 @@ namespace Platform_game
                 }
                 bossfire = TimeSpan.Zero;
             }
-            
+
             if (second >= TimeSpan.FromMilliseconds(1000))
             {
                 second = TimeSpan.Zero;
-                if (shield <= 100&&playershield)
+                if (shield <= 100 && playershield)
                 {
                     shield += 1;
                 }
@@ -176,9 +181,9 @@ namespace Platform_game
                     bosscolor = Color.Red;
                 }
             }
-            if (BossAirstrike||BossLazerbeam)
+            if (BossAirstrike || BossLazerbeam)
             {
-                if (bossfire>=TimeSpan.FromMilliseconds(2000))
+                if (bossfire >= TimeSpan.FromMilliseconds(2000))
                 {
                     BossAirstrike = false;
                     BossLazerbeam = false;
@@ -187,7 +192,7 @@ namespace Platform_game
                     bossfire = TimeSpan.Zero;
                 }
             }
-            if (BossAirstrike||BossLazerbeam||Bosschargelazer)
+            if (BossAirstrike || BossLazerbeam || Bosschargelazer)
             {
                 BossAttack = true;
             }
@@ -196,7 +201,7 @@ namespace Platform_game
                 BossAttack = false;
                 bosscolor = Color.White;
             }
-            for (int i = 0; i < enemy.Count;i++)
+            for (int i = 0; i < enemy.Count; i++)
             {
                 enemy[i].fireTime += gameTime.ElapsedGameTime;
             }
@@ -208,19 +213,19 @@ namespace Platform_game
             {
                 Exit();
             }
-            
+
             KeyboardState ks = Keyboard.GetState();
             MouseState ms = Mouse.GetState();
             IsMouseVisible = true;
 
-            
+
             if (ks.IsKeyDown(Keys.B))
             {
                 BossFight = true;
             }
-            
-            
-            if (ks.IsKeyDown(Keys.R)&&rage == false)
+
+
+            if (ks.IsKeyDown(Keys.R) && rage == false)
             {
                 if (fire.Count >= 1)
                 {
@@ -228,34 +233,34 @@ namespace Platform_game
                 }
                 else
                 {
-                    fire.Add(new Sprite(Content.Load<Texture2D>("FireballLeft"), new Vector2(0,GraphicsDevice.Viewport.Height-20), Color.White));
+                    fire.Add(new Sprite(Content.Load<Texture2D>("FireballLeft"), new Vector2(0, GraphicsDevice.Viewport.Height - 20), Color.White));
                 }
-                
+
             }
             if (fire.Count >= 1)
             {
-                if (fire[fire.Count - 1].position.X - fire[fire.Count-1].hitbox.Width> GraphicsDevice.Viewport.Width)
+                if (fire[fire.Count - 1].position.X - fire[fire.Count - 1].hitbox.Width > GraphicsDevice.Viewport.Width)
                 {
                     rage = true;
                 }
             }
-            if (rage == true&&fire.Count == 0)
+            if (rage == true && fire.Count == 0)
             {
                 rage = false;
             }
-            
-            
-            
-            if (Alive == false&& ks.IsKeyDown(Keys.R))
+
+
+
+            if (Alive == false && ks.IsKeyDown(Keys.R))
             {
-                 Jumping = false;
-                 Ground = false;
-                 FacingLeft = true;
-                 FacingRight = false;
-                 Alive = true;
-                 OnPlatform = false;
-                 health = 100;
-                 rage = false;
+                Jumping = false;
+                Ground = false;
+                FacingLeft = true;
+                FacingRight = false;
+                Alive = true;
+                OnPlatform = false;
+                health = 100;
+                rage = false;
                 score = 0;
                 fire.Clear();
                 fireball.Clear();
@@ -277,74 +282,107 @@ namespace Platform_game
                 BossAttack = false;
                 Crate.Clear();
             }
-            
-            if (Gamestart == false&&ks.IsKeyDown(Keys.Space))
+
+            if (Gamestart == false && ks.IsKeyDown(Keys.Space))
             {
                 Gamestart = true;
             }
-            if (Alive&&Gamestart)
+            if (Alive && Gamestart)
             {
                 player.UpdateotherHitbox();
                 for (int i = 0; i < enemy.Count; i++)
                 {
                     enemy[i].UpdateHitbox();
                 }
-                    if (ks.IsKeyDown(Keys.LeftShift))
+                if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift) && platformspawn == false)
                 {
-                    
-                    if (platformspawn == false)
-                    {
-                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y+player.hitbox.Height), Color.White, 1));
-                    }
+
+                    //if (platformspawn == false)
+                    //{
+                        if (IsPlayerMoving == false)
+                        {
+                            platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y - player.hitbox.Height), Color.White, 1, false));
+                        }
+                        else
+                        {
+                            if (FacingLeft)
+                            {
+                                platform.Add(new Platform(Content.Load<Texture2D>("SidePlatform"), new Vector2(player.position.X - player.hitbox.Width, player.position.Y), Color.White, 1, true));
+                            }
+                            if (FacingRight)
+                            {
+                                platform.Add(new Platform(Content.Load<Texture2D>("SidePlatform"), new Vector2(player.position.X + player.hitbox.Width * 2, player.position.Y), Color.White, 1, true));
+                            }
+                        }
+                    //}
                     platformspawn = true;
+                }
+                if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift) && platformspawn)
+                {
+                    //platform.Clear();
+                    platformspawn = false;
+                }
+
+                //else
+                //{
+                //  platform.Clear();
+                //  platformspawn = false;
+                //}
+
+                if (platformspawn)
+                {
+                    //playermove = false;
                 }
                 else
                 {
-                    platform.Clear();
-                    platformspawn = false;
+                    //playermove = true;
                 }
+
+                IsPlayerMoving = false;
                 if (platform.Count > 0)
                 {
                     for (int i = 0; i < platform.Count; i++)
                     {
-                        if (ks.IsKeyDown(Keys.Right) && launched == false)
+                        if (ks.IsKeyDown(Keys.Right) && launched == false && playermove)
                         {
+                            //fix this (Crazy Move speed)
                             player.MoveRight(GraphicsDevice.Viewport.Width, Rightspeed, platform[i].RightSide);
 
                             FacingLeft = false;
                             FacingRight = true;
-
+                            IsPlayerMoving = true;
                         }
-                        else if (ks.IsKeyDown(Keys.Left) && launched == false)
+                        else if (ks.IsKeyDown(Keys.Left) && launched == false && playermove)
                         {
                             player.MoveLeft(Leftspeed, platform[i].LeftSide);
 
                             FacingLeft = true;
                             FacingRight = false;
-
+                            IsPlayerMoving = true;
                         }
                     }
                 }
                 else
                 {
-                    if (ks.IsKeyDown(Keys.Right) && launched == false)
+
+                    if (ks.IsKeyDown(Keys.Right) && launched == false && playermove)
                     {
                         player.MoveRight(GraphicsDevice.Viewport.Width, Rightspeed, Trolololololol);
 
                         FacingLeft = false;
                         FacingRight = true;
-
+                        IsPlayerMoving = true;
                     }
-                    else if (ks.IsKeyDown(Keys.Left) && launched == false)
+                    else if (ks.IsKeyDown(Keys.Left) && launched == false && playermove)
                     {
                         player.MoveLeft(Leftspeed, Trolololololol);
 
                         FacingLeft = true;
                         FacingRight = false;
-
+                        IsPlayerMoving = true;
                     }
                 }
-                if (ks.IsKeyDown(Keys.W)&&prevks.IsKeyUp(Keys.W))
+                if (ks.IsKeyDown(Keys.W) && prevks.IsKeyUp(Keys.W))
                 {
                     TurretMovement *= -1;
                 }
@@ -371,9 +409,9 @@ namespace Platform_game
                     Ground = false;
                     Jumping = true;
                     Moveup = -25;
-                    MoveDown = 0;                                    
+                    MoveDown = 0;
                 }
-                
+
 
                 if (Jumping)
                 {
@@ -389,39 +427,39 @@ namespace Platform_game
                     Ground = true;
                     player.position.Y = GraphicsDevice.Viewport.Height - player.hitbox.Height - 70;
                 }
-               
-                if (FireTime > TimeSpan.FromMilliseconds(1000)&&rage == false&&fire.Count < 105)
+
+                if (FireTime > TimeSpan.FromMilliseconds(1000) && rage == false && fire.Count < 105)
                 {
                     if (fire.Count >= 1)
                     {
-                        fire.Add(new Sprite(Content.Load<Texture2D>("FireballLeft"), new Vector2(fire[fire.Count-1].position.X+10, fire[fire.Count-1].position.Y), Color.White));
+                        fire.Add(new Sprite(Content.Load<Texture2D>("FireballLeft"), new Vector2(fire[fire.Count - 1].position.X + 10, fire[fire.Count - 1].position.Y), Color.White));
                     }
                     else
                     {
                         fire.Add(new Sprite(Content.Load<Texture2D>("FireballLeft"), new Vector2(0, GraphicsDevice.Viewport.Height - 20), Color.White));
                     }
-                    
+
                     FireTime = TimeSpan.Zero;
                 }
                 if (rage == true)
                 {
                     int ran = random.Next(0, 1000);
                     fire.Remove(fire[fire.Count - 1]);
-                    fireball.Add(new Fireball(Content.Load <Texture2D>("FireballDown"), new Vector2(ran, -10), Color.White, false, false, true, true));
+                    fireball.Add(new Fireball(Content.Load<Texture2D>("FireballDown"), new Vector2(ran, -10), Color.White, false, false, true, true));
                     if (fire.Count <= 1)
                     {
-                       rage = false;
-                    } 
+                        rage = false;
+                    }
                 }
-                if (ks.IsKeyDown(Keys.Space) && prevks.IsKeyUp(Keys.Space)&&fire.Count>=1)
+                if (ks.IsKeyDown(Keys.Space) && prevks.IsKeyUp(Keys.Space) && fire.Count >= 1)
                 {
                     if (TurretFaceLeft)
                     {
-                        fireball.Add(new Fireball(Content.Load<Texture2D>("FireballLeft"), new Vector2(player.position.X, player.position.Y + 17), Color.White, true, false,false, true));
+                        fireball.Add(new Fireball(Content.Load<Texture2D>("FireballLeft"), new Vector2(player.position.X, player.position.Y + 17), Color.White, true, false, false, true));
                     }
                     if (TurretFaceRight)
                     {
-                        fireball.Add(new Fireball(Content.Load<Texture2D>("FireballRight"), new Vector2(player.position.X+60, player.position.Y + 17), Color.White, false, true,false, true));
+                        fireball.Add(new Fireball(Content.Load<Texture2D>("FireballRight"), new Vector2(player.position.X + 60, player.position.Y + 17), Color.White, false, true, false, true));
                     }
                     fire.Remove(fire[fire.Count - 1]);
                 }
@@ -440,25 +478,25 @@ namespace Platform_game
                         fireball[i].MoveDown();
                     }
                 }
-                    
-                    
-                
-                
+
+
+
+
                 for (int i = 0; i < platform.Count; i++)
                 {
-                    
+
                     platform[i].Update();
                     if (player.Hit(platform[i].bottom))
                     {
                         Jumping = false;
                         break;
                     }
-                    
-                    if (player.Hit(platform[i].top)&&OnPlatform == false)
+
+                    if (player.Hit(platform[i].top) && OnPlatform == false)
                     {
                         Ground = true;
                         OnPlatform = true;
-                        player.position.Y = platform[i].hitbox.Top - player.hitbox.Height+5;
+                        player.position.Y = platform[i].hitbox.Top - player.hitbox.Height + 5;
                         MoveDown = 0;
                     }
                     if (OnPlatform == true)
@@ -468,15 +506,15 @@ namespace Platform_game
                             Ground = false;
                             OnPlatform = false;
                         }
-                        
+
                     }
                 }
-                if (platform.Count <= 0&&OnPlatform == true)
+                if (platform.Count <= 0 && OnPlatform == true)
                 {
                     OnPlatform = false;
                     Ground = false;
                 }
-                if (enemySpawn > TimeSpan.FromMilliseconds(enemySpawnSpeed)&&!BossFight&&makeenemies)
+                if (enemySpawn > TimeSpan.FromMilliseconds(enemySpawnSpeed) && !BossFight && makeenemies)
                 {
                     enemySpawn = TimeSpan.Zero;
                     int ran = random.Next(0, 21);
@@ -484,17 +522,17 @@ namespace Platform_game
                     {
                         enemy.Add(new Snakeman(Content.Load<Texture2D>("PlayerL"), new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height - 110), Color.White, true, false, -25, 20, true, false, false));
                     }
-                    if (ran >= 3&&ran <= 17)
+                    if (ran >= 3 && ran <= 17)
                     {
                         enemy.Add(new Snakeman(Content.Load<Texture2D>("PlayerR"), new Vector2(0, GraphicsDevice.Viewport.Height - 110), Color.White, false, true, -25, 20, true, false, false));
                     }
                     if (ran == 18)
                     {
-                        plane.Add(new FlyingEnemy(Content.Load<Texture2D>("planeR"), new Vector2(-10, 0), Color.White, false, true,2));
+                        plane.Add(new FlyingEnemy(Content.Load<Texture2D>("planeR"), new Vector2(-10, 0), Color.White, false, true, 2));
                     }
                     if (ran == 19)
                     {
-                        plane.Add(new FlyingEnemy(Content.Load<Texture2D>("planeL"), new Vector2(GraphicsDevice.Viewport.Width, 0), Color.White, true, false,2));
+                        plane.Add(new FlyingEnemy(Content.Load<Texture2D>("planeL"), new Vector2(GraphicsDevice.Viewport.Width, 0), Color.White, true, false, 2));
                     }
                     if (ran == 20)
                     {
@@ -540,13 +578,13 @@ namespace Platform_game
                         enemy[i].jumping = false;
                     }
 
-                    for (int p = 0; p < platform.Count;p++)
+                    for (int p = 0; p < platform.Count; p++)
                     {
                         if (enemy[i].hit(platform[p].bottom))
                         {
                             enemy[i].jumping = false;
                         }
-                        if (enemy[i].hit(platform[p].top)&&enemy[i].OnPlatform==false)
+                        if (enemy[i].hit(platform[p].top) && enemy[i].OnPlatform == false)
                         {
                             //enemy[i].OnPlatform = true;
                             //enemy[i].ground = true;
@@ -562,24 +600,24 @@ namespace Platform_game
                                 enemy[i].ground = false;
                             }
                         }*/
-                        
+
                     }
 
                     if (enemy[i].Fire())
                     {
                         if (enemy[i].Left)
                         {
-                            fireball.Add(new Fireball(Content.Load<Texture2D>("FireballLeft"), new Vector2(enemy[i].position.X, enemy[i].position.Y + 17), Color.White, true, false,false, false));
+                            fireball.Add(new Fireball(Content.Load<Texture2D>("FireballLeft"), new Vector2(enemy[i].position.X, enemy[i].position.Y + 17), Color.White, true, false, false, false));
                         }
                         if (enemy[i].Right)
                         {
-                            fireball.Add(new Fireball(Content.Load<Texture2D>("FireballRight"), new Vector2(enemy[i].position.X+60, enemy[i].position.Y + 17), Color.White, false, true,false, false));
+                            fireball.Add(new Fireball(Content.Load<Texture2D>("FireballRight"), new Vector2(enemy[i].position.X + 60, enemy[i].position.Y + 17), Color.White, false, true, false, false));
                         }
                         enemy[i].fireTime = TimeSpan.Zero;
                     }
                     for (int x = 0; x < fireball.Count; x++)
                     {
-                        if (enemy[i].otherHit(fireball[x].hitbox)&&fireball[x].IsPLayer)
+                        if (enemy[i].otherHit(fireball[x].hitbox) && fireball[x].IsPLayer)
                         {
                             if (enemy[i].ground)
                             {
@@ -597,15 +635,15 @@ namespace Platform_game
                                 Crate.Add(new Crates(Content.Load<Texture2D>("Crate"), new Vector2(enemy[i].position.X, enemy[i].position.Y + 20), Color.White));
                             }
                             enemy.Remove(enemy[i]);
-                            fireball.Remove(fireball[x]); 
+                            fireball.Remove(fireball[x]);
                             score++;
                             break;
                         }
-                        
+
                     }
-                    
+
                 }
-                for (int i = 0;i<plane.Count;i++)
+                for (int i = 0; i < plane.Count; i++)
                 {
                     if (plane[i].Right)
                     {
@@ -615,7 +653,7 @@ namespace Platform_game
                     {
                         plane[i].MoveLeft();
                     }
-                    if(plane[i].fire())
+                    if (plane[i].fire())
                     {
                         plane[i].fireTime = TimeSpan.Zero;
                         if (plane[i].Right)
@@ -624,13 +662,13 @@ namespace Platform_game
                         }
                         if (plane[i].Left)
                         {
-                            fireball.Add(new Fireball(Content.Load<Texture2D>("FireballDown"), new Vector2(plane[i].position.X+plane[i].hitbox.Width-2, plane[i].position.Y), Color.White, false, false, true, false));
+                            fireball.Add(new Fireball(Content.Load<Texture2D>("FireballDown"), new Vector2(plane[i].position.X + plane[i].hitbox.Width - 2, plane[i].position.Y), Color.White, false, false, true, false));
                         }
                     }
-                    for (int f = 0; f < fireball.Count;f++)
+                    for (int f = 0; f < fireball.Count; f++)
                     {
-                        
-                        if (fireball[f].Hit(plane[i].hitbox)&&fireball[f].IsPLayer)
+
+                        if (fireball[f].Hit(plane[i].hitbox) && fireball[f].IsPLayer)
                         {
                             if (plane[i].Health >= 1)
                             {
@@ -656,8 +694,8 @@ namespace Platform_game
                         plane.Remove(plane[i]);
                     }
                 }
-                
-                for (int i = 0; i < fireball.Count;i++)
+
+                for (int i = 0; i < fireball.Count; i++)
                 {
                     if (player.Hit(fireball[i].hitbox) && fireball[i].IsPLayer == false && rage != true)
                     {
@@ -672,9 +710,10 @@ namespace Platform_game
                         fireball.Remove(fireball[i]);
                         break;
                     }
+                    
                     for (int p = 0; p < platform.Count; p++)
                     {
-                        if (fireball[i].Hit(platform[0].hitbox))
+                        if (fireball[i].Hit(platform[p].hitbox))
                         {
                             fireball.Remove(fireball[i]);
                             break;
@@ -685,7 +724,7 @@ namespace Platform_game
                         break;
                     }
                 }
-                for (int i = 0; i < fireball.Count; i ++)
+                for (int i = 0; i < fireball.Count; i++)
                 {
                     if (fireball[i].IsOffScreen(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height))
                     {
@@ -705,27 +744,27 @@ namespace Platform_game
                 boss.SmallHitbox();
                 if (BossFight)
                 {
-                    
+
                     if (enemy.Count == 0)
                     {
                         boss.position.Y = GraphicsDevice.Viewport.Height - 395;
                     }
-                    if (boss.smallHitbox.X>player.hitbox.X+player.hitbox.Width&&BossMove)
+                    if (boss.smallHitbox.X > player.hitbox.X + player.hitbox.Width && BossMove)
                     {
                         boss.Left = true;
                         boss.Right = false;
                     }
-                    if (boss.smallHitbox.X+boss.smallHitbox.Width < player.hitbox.X&&BossMove)
+                    if (boss.smallHitbox.X + boss.smallHitbox.Width < player.hitbox.X && BossMove)
                     {
                         boss.Right = true;
                         boss.Left = false;
                     }
-                    
+
                     if (BossAirstrike)
-                    {     
-                        for (int i = 0; i < 10;i++)
+                    {
+                        for (int i = 0; i < 10; i++)
                         {
-                            fireball.Add(new Fireball(Content.Load<Texture2D>("FireballDown"), new Vector2(bossfirelocation + i*10, -500), Color.White, false, false, true, false));
+                            fireball.Add(new Fireball(Content.Load<Texture2D>("FireballDown"), new Vector2(bossfirelocation + i * 10, -500), Color.White, false, false, true, false));
                         }
                         Warning.Add(new Sprite(Content.Load<Texture2D>("Warning"), new Vector2(bossfirelocation, 0), Color.White));
                     }
@@ -736,15 +775,15 @@ namespace Platform_game
                     if (BossLazerbeam)
                     {
                         BossMove = false;
-                        for (int i = 0; i < 23;i++)
+                        for (int i = 0; i < 23; i++)
                         {
                             if (boss.Left)
                             {
-                                fireball.Add(new Fireball(Content.Load<Texture2D>("FireballLeft"), new Vector2(boss.smallHitbox.X, GraphicsDevice.Viewport.Height - 100 - i*10), Color.White, true, false, false, false));
+                                fireball.Add(new Fireball(Content.Load<Texture2D>("FireballLeft"), new Vector2(boss.smallHitbox.X, GraphicsDevice.Viewport.Height - 100 - i * 10), Color.White, true, false, false, false));
                             }
                             if (boss.Right)
                             {
-                                fireball.Add(new Fireball(Content.Load<Texture2D>("FireballRight"), new Vector2(boss.smallHitbox.X+50, GraphicsDevice.Viewport.Height - 100 - i*10), Color.White, false, true, false, false));
+                                fireball.Add(new Fireball(Content.Load<Texture2D>("FireballRight"), new Vector2(boss.smallHitbox.X + 50, GraphicsDevice.Viewport.Height - 100 - i * 10), Color.White, false, true, false, false));
                             }
                         }
                     }
@@ -779,7 +818,7 @@ namespace Platform_game
                         {
                             health -= 10;
                         }
-                        
+
                     }
                     for (int i = 0; i < fireball.Count; i++)
                     {
@@ -794,7 +833,7 @@ namespace Platform_game
                             }
                         }
                     }
-                    if (boss.health<=0)
+                    if (boss.health <= 0)
                     {
                         boss.position.X = -1000;
                         score += 1000;
@@ -802,9 +841,9 @@ namespace Platform_game
                         Warning.Clear();
                         boss.health = 100;
                     }
-                    
-                    
-                    
+
+
+
                 }
                 if (BossFight)
                 {
@@ -814,17 +853,17 @@ namespace Platform_game
                 {
                     BossMove = false;
                 }
-                if (launchedTime < TimeSpan.FromMilliseconds(900)&&launched == true)
+                if (launchedTime < TimeSpan.FromMilliseconds(900) && launched == true)
                 {
                     if (boss.Left)
                     {
                         player.MoveLeft(20, Trolololololol);
-                        
+
                     }
                     if (boss.Right)
                     {
                         player.MoveRight(GraphicsDevice.Viewport.Width, 20, Trolololololol);
-                        
+
                     }
                 }
                 else
@@ -845,11 +884,11 @@ namespace Platform_game
                 {
                     playershieldblinking = true;
                 }
-                if (shield > 30&&playershield && playershieldblinking)
+                if (shield > 30 && playershield && playershieldblinking)
                 {
                     playershieldblinking = false;
                 }
-                for (int i = 0; i < Crate.Count;i++)
+                for (int i = 0; i < Crate.Count; i++)
                 {
                     Crate[i].MoveDown(GraphicsDevice.Viewport.Height - 70);
                     if (Crate[i].Intersect(player.hitbox))
@@ -879,13 +918,13 @@ namespace Platform_game
                             {
                                 health = 100;
                             }
-                            
+
                         }
                         Crate.Remove(Crate[i]);
                         break;
                     }
                 }
-                
+
                 if (FacingLeft)
                 {
                     TurretL.position = player.position;
@@ -897,12 +936,12 @@ namespace Platform_game
                     TurretR.position = player.position;
                     TurretR.position.X = player.position.X + 18;
                     TurretL.position = player.position;
-                    TurretL.position.X = player.position.X -18;
+                    TurretL.position.X = player.position.X - 18;
                 }
-                
+
                 LegsR.position = player.position;
                 LegsL.position = player.position;
-                
+
                 if (shield > 100)
                 {
                     shield = 100;
@@ -911,9 +950,9 @@ namespace Platform_game
                 {
                     shield = 0;
                 }
-                if (HealthBar.position.X != health-100)
+                if (HealthBar.position.X != health - 100)
                 {
-                    if (HealthBar.position.X > health-100)
+                    if (HealthBar.position.X > health - 100)
                     {
                         HealthBar.MoveLeft();
                     }
@@ -922,9 +961,9 @@ namespace Platform_game
                         HealthBar.MoveRight();
                     }
                 }
-                if (ShieldBar.position.X != shield-100)
+                if (ShieldBar.position.X != shield - 100)
                 {
-                    if (ShieldBar.position.X > shield-100)
+                    if (ShieldBar.position.X > shield - 100)
                     {
                         ShieldBar.MoveLeft();
                     }
@@ -936,7 +975,7 @@ namespace Platform_game
 
 
             }
-            
+
             prevks = ks;
             base.Update(gameTime);
         }
@@ -944,11 +983,11 @@ namespace Platform_game
 
         protected override void Draw(GameTime gameTime)
         {
-            
+
             GraphicsDevice.Clear(Color.CornflowerBlue);
             spriteBatch.Begin();
 
-            if (Alive&&Gamestart)
+            if (Alive && Gamestart)
             {
                 Background.Draw(spriteBatch);
                 if (boss.Left)
@@ -960,17 +999,17 @@ namespace Platform_game
                     boss.Draw(spriteBatch, Content.Load<Texture2D>("BossR"), bosscolor);
                 }
                 spriteBatch.DrawString(font, "" + boss.health + "", new Vector2(boss.smallHitbox.X + 20, boss.smallHitbox.Y - 20), Color.White);
-                
-                for (int i = 0; i < Crate.Count;i++)
+
+                for (int i = 0; i < Crate.Count; i++)
                 {
                     Crate[i].Draw(spriteBatch);
                 }
-                for (int i = 0; i < Warning.Count;i++)
+                for (int i = 0; i < Warning.Count; i++)
                 {
                     Warning[i].Draw(spriteBatch);
                 }
-                
-                if (playershield&&!playershieldblinking)
+
+                if (playershield && !playershieldblinking)
                 {
                     playercolor = Color.Blue;
                 }
@@ -978,7 +1017,7 @@ namespace Platform_game
                 {
                     playercolor = Color.Red;
                 }
-                if (!playershield&&!rage)
+                if (!playershield && !rage)
                 {
                     playercolor = Color.White;
                 }
@@ -1000,13 +1039,13 @@ namespace Platform_game
                     }
                     playercolorchange = false;
                 }
-               
+
                 player.Draw2(spriteBatch, Content.Load<Texture2D>("BoxR"), playercolor);
-                player.Draw2(spriteBatch, Content.Load<Texture2D>("BoxR"), playercolor);
-                
+                //player.Draw2(spriteBatch, Content.Load<Texture2D>("BoxR"), playercolor);
+
                 if (FacingLeft)
                 {
-                    LegsL.OtherDraw(spriteBatch, playercolor);  
+                    LegsL.OtherDraw(spriteBatch, playercolor);
                 }
                 if (FacingRight)
                 {
@@ -1021,34 +1060,42 @@ namespace Platform_game
                     }
                     if (FacingRight)
                     {
-                        TurretFaceRight= true;
+                        TurretFaceRight = true;
                         TurretFaceLeft = false;
                     }
                 }
-                
-                    if (TurretFaceLeft)
-                    {
-                        TurretL.OtherDraw(spriteBatch, playercolor);
-                    }
-                    if (TurretFaceRight)
-                    {
-                        TurretR.OtherDraw(spriteBatch, playercolor);
-                    }
-                
+
+                if (TurretFaceLeft)
+                {
+                    TurretL.OtherDraw(spriteBatch, playercolor);
+                }
+                if (TurretFaceRight)
+                {
+                    TurretR.OtherDraw(spriteBatch, playercolor);
+                }
+
                 for (int i = 0; i < platform.Count; i++)
                 {
-                    platform[i].Draw(spriteBatch);
+                    if (platform[i].OnSide == false)
+                    {
+                        platform[i].Draw(spriteBatch);
+                    }
+
+                    if (platform[i].OnSide)
+                    {
+                        platform[i].Draw2(spriteBatch, Content.Load<Texture2D>("SidePlatform"));
+                    }
                 }
-                for (int i = 0;i<fire.Count;i++)
+                for (int i = 0; i < fire.Count; i++)
                 {
                     fire[i].Draw(spriteBatch);
                 }
 
                 //spriteBatch.DrawString(font, "Health = " + health + "", new Vector2(100, GraphicsDevice.Viewport.Height - 40), Color.White);
-                //spriteBatch.DrawString(font, "Shield = " + shield + "", new Vector2(200, GraphicsDevice.Viewport.Height - 40), Color.White);
+                spriteBatch.DrawString(font, "width = " + player.hitbox.Width + "", new Vector2(200, GraphicsDevice.Viewport.Height - 40), Color.White);
                 HealthBar.Draw(spriteBatch);
                 ShieldBar.Draw(spriteBatch);
-                
+
                 if (plane.Count >= 1)
                 {
                     spriteBatch.DrawString(font, "Plane 1 Health = " + plane[0].Health + "", new Vector2(800, GraphicsDevice.Viewport.Height - 40), Color.White);
@@ -1080,12 +1127,12 @@ namespace Platform_game
                     }
 
                 }
-                
+
                 for (int i = 0; i < plane.Count; i++)
                 {
                     plane[i].Draw(spriteBatch);
                 }
-                    for (int i = 0; i < fireball.Count; i++)
+                for (int i = 0; i < fireball.Count; i++)
                 {
                     fireball[i].Draw(spriteBatch);
                 }
