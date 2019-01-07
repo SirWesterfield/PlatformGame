@@ -97,6 +97,18 @@
 /processorParam:TextureFormat=Color
 /build:Failure.jfif
 
+#begin file:///C:/Users/wesley.anastasi/Pictures/platform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:file:///C:/Users/wesley.anastasi/Pictures/platform.png;platform.png
+
 #begin FireballDown.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -212,18 +224,6 @@
 /processorParam:TextureFormat=Color
 /build:planeR.png
 
-#begin platform - Copy.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:platform - Copy.png;SidePlatform.png
-
 #begin platform.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -271,6 +271,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:ShieldBar.png
+
+#begin sidePlatform.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:sidePlatform.png
 
 #begin Start.jpg
 /importer:TextureImporter

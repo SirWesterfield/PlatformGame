@@ -26,11 +26,13 @@ namespace Platform_game
         {
             bottom.Y = hitbox.Bottom;
             bottom.X = hitbox.X;
-            bottom.Width = hitbox.Width;
+            bottom.Width = hitbox.Width-3;
+            bottom.X = hitbox.X + 3;
 
             top.Y = hitbox.Top;
             top.X = hitbox.X;
-            top.Width = hitbox.Width;
+            top.Width = hitbox.Width-3;
+            top.X = hitbox.X + 3;
 
             LeftSide = hitbox;
             LeftSide.X = hitbox.X + hitbox.Width;

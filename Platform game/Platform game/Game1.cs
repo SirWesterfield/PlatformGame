@@ -72,14 +72,19 @@ namespace Platform_game
         bool launched = false;
         bool playershieldblinking = false;
         bool playercolorchange = false;
-        bool makeenemies = true;
+
+
+        bool makeenemies = false;
+
+
         bool BossAirstrike = false;
         int bossfirelocation = 0;
         bool BossAttack = false;
         bool BossLazerbeam = false;
         bool Bosschargelazer = false;
         bool IsPlayerMoving = true;
-        bool playermove = true;
+        bool playermoveleft = true;
+        bool playermoveright = true;
         //bool OnEnemy = false;
         int TurretMovement = 1;
         Rectangle Trolololololol;
@@ -294,94 +299,53 @@ namespace Platform_game
                 {
                     enemy[i].UpdateHitbox();
                 }
-                if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift) && platformspawn == false)
+                if (ks.IsKeyDown(Keys.RightShift) && prevks.IsKeyUp(Keys.RightShift) /*&& platformspawn*/)
                 {
-
-                    //if (platformspawn == false)
-                    //{
-                        if (IsPlayerMoving == false)
-                        {
-                            platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y - player.hitbox.Height), Color.White, 1, false));
-                        }
-                        else
-                        {
-                            if (FacingLeft)
-                            {
-                                platform.Add(new Platform(Content.Load<Texture2D>("SidePlatform"), new Vector2(player.position.X - player.hitbox.Width, player.position.Y), Color.White, 1, true));
-                            }
-                            if (FacingRight)
-                            {
-                                platform.Add(new Platform(Content.Load<Texture2D>("SidePlatform"), new Vector2(player.position.X + player.hitbox.Width * 2, player.position.Y), Color.White, 1, true));
-                            }
-                        }
-                    //}
-                    platformspawn = true;
-                }
-                if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift) && platformspawn)
-                {
-                    //platform.Clear();
+                    platform.Clear();
                     platformspawn = false;
                 }
-
-                //else
-                //{
-                //  platform.Clear();
-                //  platformspawn = false;
-                //}
-
-                if (platformspawn)
+                if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift) /*&& platformspawn == false*/)
                 {
-                    //playermove = false;
-                }
-                else
-                {
-                    //playermove = true;
-                }
 
+                    if (ks.IsKeyDown(Keys.Down))
+                    {
+                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y + player.hitbox.Height), Color.White, 1, false));
+                    }
+                    else if (IsPlayerMoving == false)
+                    {
+                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y - player.hitbox.Height), Color.White, 1, false));
+                    }
+                    else
+                    {
+                        if (FacingLeft)
+                        {
+                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X - player.hitbox.Width, player.position.Y), Color.White, 1, true));
+                        }
+                        if (FacingRight)
+                        {
+                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X + player.hitbox.Width * 2, player.position.Y), Color.White, 1, true));
+                        }
+                    } 
+                    //platformspawn = true;
+                }
                 IsPlayerMoving = false;
-                if (platform.Count > 0)
+                if (ks.IsKeyDown(Keys.Right) && launched == false && playermoveright)
                 {
-                    for (int i = 0; i < platform.Count; i++)
-                    {
-                        if (ks.IsKeyDown(Keys.Right) && launched == false && playermove)
-                        {
-                            //fix this (Crazy Move speed)
-                            player.MoveRight(GraphicsDevice.Viewport.Width, Rightspeed, platform[i].RightSide);
+                    player.MoveRight(GraphicsDevice.Viewport.Width, Rightspeed, Trolololololol);
 
-                            FacingLeft = false;
-                            FacingRight = true;
-                            IsPlayerMoving = true;
-                        }
-                        else if (ks.IsKeyDown(Keys.Left) && launched == false && playermove)
-                        {
-                            player.MoveLeft(Leftspeed, platform[i].LeftSide);
-
-                            FacingLeft = true;
-                            FacingRight = false;
-                            IsPlayerMoving = true;
-                        }
-                    }
+                    FacingLeft = false;
+                    FacingRight = true;
+                    IsPlayerMoving = true;
                 }
-                else
+                else if (ks.IsKeyDown(Keys.Left) && launched == false && playermoveleft)
                 {
+                    player.MoveLeft(Leftspeed, Trolololololol);
 
-                    if (ks.IsKeyDown(Keys.Right) && launched == false && playermove)
-                    {
-                        player.MoveRight(GraphicsDevice.Viewport.Width, Rightspeed, Trolololololol);
-
-                        FacingLeft = false;
-                        FacingRight = true;
-                        IsPlayerMoving = true;
-                    }
-                    else if (ks.IsKeyDown(Keys.Left) && launched == false && playermove)
-                    {
-                        player.MoveLeft(Leftspeed, Trolololololol);
-
-                        FacingLeft = true;
-                        FacingRight = false;
-                        IsPlayerMoving = true;
-                    }
+                    FacingLeft = true;
+                    FacingRight = false;
+                    IsPlayerMoving = true;
                 }
+                
                 if (ks.IsKeyDown(Keys.W) && prevks.IsKeyUp(Keys.W))
                 {
                     TurretMovement *= -1;
@@ -399,6 +363,11 @@ namespace Platform_game
                         TurretFaceRight = true;
                     }
                 }
+                if (player.position.Y + player.hitbox.Height >= GraphicsDevice.Viewport.Height - 70)
+                {
+                    Ground = true;
+                    player.position.Y = GraphicsDevice.Viewport.Height - player.hitbox.Height - 70;
+                }
                 if (Jumping == false && Ground == false)
                 {
                     player.MoveDown(MoveDown, GraphicsDevice.Viewport.Height);
@@ -412,7 +381,6 @@ namespace Platform_game
                     MoveDown = 0;
                 }
 
-
                 if (Jumping)
                 {
                     player.MoveUp(Moveup);
@@ -422,11 +390,7 @@ namespace Platform_game
                 {
                     Jumping = false;
                 }
-                if (player.position.Y + player.hitbox.Height >= GraphicsDevice.Viewport.Height - 70)
-                {
-                    Ground = true;
-                    player.position.Y = GraphicsDevice.Viewport.Height - player.hitbox.Height - 70;
-                }
+                
 
                 if (FireTime > TimeSpan.FromMilliseconds(1000) && rage == false && fire.Count < 105)
                 {
@@ -481,7 +445,10 @@ namespace Platform_game
 
 
 
-
+                playermoveright = true;
+                playermoveleft = true;
+                OnPlatform = false;
+                Ground = false;
                 for (int i = 0; i < platform.Count; i++)
                 {
 
@@ -489,9 +456,18 @@ namespace Platform_game
                     if (player.Hit(platform[i].bottom))
                     {
                         Jumping = false;
-                        break;
+                        
                     }
-
+                    if (player.Hit(platform[i].RightSide))
+                    {
+                        playermoveright = false;
+                    }
+                    
+                    if (player.Hit(platform[i].LeftSide))
+                    {
+                        playermoveleft = false;
+                    }
+                    
                     if (player.Hit(platform[i].top) && OnPlatform == false)
                     {
                         Ground = true;
@@ -499,15 +475,7 @@ namespace Platform_game
                         player.position.Y = platform[i].hitbox.Top - player.hitbox.Height + 5;
                         MoveDown = 0;
                     }
-                    if (OnPlatform == true)
-                    {
-                        if (player.NoHit(platform[i].top))
-                        {
-                            Ground = false;
-                            OnPlatform = false;
-                        }
-
-                    }
+                    
                 }
                 if (platform.Count <= 0 && OnPlatform == true)
                 {
