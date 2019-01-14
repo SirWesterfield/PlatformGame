@@ -31,7 +31,7 @@ namespace Platform_game
 
             top.Y = hitbox.Top;
             top.X = hitbox.X;
-            top.Width = hitbox.Width-3;
+            top.Width = hitbox.Width-12;
             top.X = hitbox.X + 3;
 
             LeftSide = hitbox;

@@ -21,16 +21,16 @@ namespace Platform_game
         {
             spritebatch.Draw(player, position, chromatic);
         }
-        public void MoveRight (int screensize, int movespeed, Rectangle platformrightside)
+        public void MoveRight (int screensize, int movespeed)
         {
-            if (position.X + hitbox.Width < screensize && hitbox.Intersects(platformrightside) == false)
+            if (position.X + hitbox.Width < screensize)
             {
                 position.X += movespeed;
             }
         }
-        public void MoveLeft(int movesspeed, Rectangle platformleftside)
+        public void MoveLeft(int movesspeed)
         {
-            if (position.X > 0 &&hitbox.Intersects(platformleftside)==false)
+            if (position.X > 0)
             {
                 position.X -= movesspeed;
             }
