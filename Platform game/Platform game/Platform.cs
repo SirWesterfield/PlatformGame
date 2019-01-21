@@ -16,11 +16,15 @@ namespace Platform_game
         public Rectangle RightSide;
         public int movespeed;
         public bool OnSide;
-        public Platform(Texture2D image, Vector2 position, Color color, int movespeed, bool OnSide)
+        public int Movedirection;
+        public bool DoMove;
+        public Platform(Texture2D image, Vector2 position, Color color, int movespeed, bool OnSide, int Movedirection, bool DoMove)
             : base(image, position, color)
         {
             this.movespeed = movespeed;
             this.OnSide = OnSide;
+            this.Movedirection = Movedirection;
+            this.DoMove = DoMove;
         }
         public void Update ()
         {
@@ -37,13 +41,26 @@ namespace Platform_game
             LeftSide = hitbox;
             LeftSide.X = hitbox.X + hitbox.Width;
             LeftSide.Width = 1;
-            LeftSide.Y = hitbox.Y + 5;
+            LeftSide.Y = hitbox.Y - 5;
             LeftSide.Height = hitbox.Height-5;
             
             RightSide = hitbox;            
             RightSide.Width = 1;           
-            RightSide.Y = hitbox.Y + 5;
-            RightSide.Height = hitbox.Height - 5;
+            RightSide.Y = hitbox.Y - 5;
+            RightSide.Height = hitbox.Height-5;
+        }
+
+
+        public void Move ()
+        {
+            if (OnSide)
+            {
+                position.Y += Movedirection;
+            }
+            else
+            {
+                position.X += Movedirection;
+            }
         }
 
         public void Draw2(SpriteBatch spritebatch, Texture2D image)

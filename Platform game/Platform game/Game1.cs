@@ -73,7 +73,7 @@ namespace Platform_game
         bool playercolorchange = false;
 
 
-        bool makeenemies = true;
+        bool makeenemies = false;
 
 
         bool BossAirstrike = false;
@@ -289,6 +289,7 @@ namespace Platform_game
                 BossLazerbeam = false;
                 BossAttack = false;
                 Crate.Clear();
+                
             }
 
             if (Gamestart == false && ks.IsKeyDown(Keys.Space))
@@ -303,31 +304,70 @@ namespace Platform_game
                 {
                     enemy[i].UpdateHitbox();
                 }
-                if (ks.IsKeyDown(Keys.RightShift) && prevks.IsKeyUp(Keys.RightShift) /*&& platformspawn*/)
+                if (ks.IsKeyDown(Keys.Q) && prevks.IsKeyUp(Keys.Q))
+                {
+                    for (int i = 0; i < GraphicsDevice.Viewport.Width;i+=20)
+                    {
+                        platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(i, GraphicsDevice.Viewport.Height), Color.White, 1, true, 1, true));
+                    }
+                }
+                /*if (ks.IsKeyDown(Keys.Q) && prevks.IsKeyUp(Keys.Q))
                 {
                     platform.Clear();
-                    //platformspawn = false;
+                    for (int i = 0; i < 10; i++)
+                    {
+                        int ranx = random.Next(0, GraphicsDevice.Viewport.Width);
+                        int rany = random.Next(0, GraphicsDevice.Viewport.Height);
+                        int ranp = random.Next(0, 2);
+                        if (ranp == 1)
+                        {
+                            platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(ranx, rany), Color.White, 1, false, 1, true));
+                        }
+                        else
+                        {
+                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(ranx, rany), Color.White, 1, true, 1, true));
+                        }
+                    }
+                    int ranpx = random.Next(0, GraphicsDevice.Viewport.Width);
+                    int ranpy = random.Next(0, GraphicsDevice.Viewport.Height);
+                    player.position.X = ranpx;
+                    player.position.Y = ranpy;
+                    if (enemy.Count > 0)
+                    {
+                        for (int i = 0; i < enemy.Count; i++)
+                        {
+                            int ranex = random.Next(0, GraphicsDevice.Viewport.Width);
+                            int raney = random.Next(0, GraphicsDevice.Viewport.Height);
+                            enemy[i].position.X = ranex;
+                            enemy[i].position.Y = raney;
+                        }
+                    }
+                        //platformspawn = false;
+                }*/
+                if (ks.IsKeyDown(Keys.RightShift)&&prevks.IsKeyUp(Keys.RightShift))
+                {
+                    platform.Clear();
                 }
                 if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift) /*&& platformspawn == false*/)
                 {
 
                     if (ks.IsKeyDown(Keys.Down))
                     {
-                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y + player.hitbox.Height), Color.White, 1, false));
+                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y + player.hitbox.Height), Color.White, 1, false, 1, false));
                     }
-                    else if (IsPlayerMoving == false)
+                    else if (IsPlayerMoving == false && ks.IsKeyUp(Keys.Left) && ks.IsKeyUp(Keys.Right))
                     {
-                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y - player.hitbox.Height), Color.White, 1, false));
+                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y - player.hitbox.Height), Color.White, 1, false, 1, false));
                     }
                     else
                     {
-                        if (FacingLeft)
+                        if (ks.IsKeyDown(Keys.Left))
                         {
-                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X - player.hitbox.Width, player.position.Y), Color.White, 1, true));
+                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X - player.hitbox.Width, player.position.Y), Color.White, 1, true, 1, false));
                         }
-                        if (FacingRight)
+                        if (ks.IsKeyDown(Keys.Right))
                         {
-                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X + player.hitbox.Width * 2, player.position.Y), Color.White, 1, true));
+                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X + player.hitbox.Width * 2, player.position.Y), Color.White, 1, true, 1, false));
                         }
                     } 
                     //platformspawn = true;
@@ -455,6 +495,24 @@ namespace Platform_game
                 Ground = false;
                 for (int i = 0; i < platform.Count; i++)
                 {
+                    if (platform[i].DoMove)
+                    {
+                        platform[i].Move();
+                        if (platform[i].OnSide)
+                        {
+                            if (platform[i].position.Y < 0 || platform[i].position.Y > GraphicsDevice.Viewport.Height)
+                            {
+                                platform[i].Movedirection *= -1;
+                            }
+                        }
+                        else
+                        {
+                            if (platform[i].position.X < 0 || platform[i].position.X > GraphicsDevice.Viewport.Width)
+                            {
+                                platform[i].Movedirection *= -1;
+                            }
+                        }
+                    }
 
                     platform[i].Update();
                     if (player.Hit(platform[i].bottom))
@@ -462,15 +520,20 @@ namespace Platform_game
                         Jumping = false;
                         
                     }
-                    if (launched && player.Hit(platform[i].hitbox))
+                    if (BossFight)
                     {
-                        platform.Remove(platform[i]);
-                        break;
-                    }
-                    if (boss.otherHit(platform[i].hitbox))
-                    {
-                        platform.Remove(platform[i]);
-                        break;
+                        if (launched && player.Hit(platform[i].hitbox))
+                        {
+                            platform.Remove(platform[i]);
+                            break;
+                        }
+                        if (boss.otherHit(platform[i].hitbox))
+                        {
+                            platform.Remove(platform[i]);
+                            boss.health -= 1;
+                            break;
+                            
+                        }
                     }
                     if (player.Hit(platform[i].RightSide))
                     {
@@ -777,7 +840,7 @@ namespace Platform_game
                             }
                         }
                     }
-                    //boss.Sides(GraphicsDevice.Viewport.Width);
+                    boss.Sides(GraphicsDevice.Viewport.Width);
                     if (BossMove)
                     {
                         if (boss.Right)
