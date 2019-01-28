@@ -26,6 +26,7 @@ namespace Platform_game
         List<FlyingEnemy> plane = new List<FlyingEnemy>();
         List<Sprite> Warning = new List<Sprite>();
         List<Crates> Crate = new List<Crates>();
+        List<Moveythingy> Clouds = new List<Moveythingy>();
 
         Player player;
         Random random = new Random();
@@ -41,7 +42,8 @@ namespace Platform_game
         Bars ShieldBar;
         Color bosscolor = Color.White;
         Color playercolor = Color.White;
-
+        Sprite BackgroundPlatform;
+        
         //int damagetaken = 0;
 
         bool Jumping = false;
@@ -72,8 +74,8 @@ namespace Platform_game
         bool playershieldblinking = false;
         bool playercolorchange = false;
 
-
-        bool makeenemies = false;
+        bool BossPlatformsSpawned = false;
+        bool makeenemies = true;
 
 
         bool BossAirstrike = false;
@@ -124,7 +126,7 @@ namespace Platform_game
             LegsR = new PlayerSprite(Content.Load<Texture2D>("LegsR"), new Vector2(0, 0), Color.White);
             HealthBar = new Bars(Content.Load<Texture2D>("HealthBar"), new Vector2(0, GraphicsDevice.Viewport.Height - 40), Color.White);
             ShieldBar = new Bars(Content.Load<Texture2D>("ShieldBar"), new Vector2(0, GraphicsDevice.Viewport.Height - 40), Color.White);
-            
+            BackgroundPlatform = new Sprite(Content.Load<Texture2D>("BackgroundPlatform"), new Vector2(0,0), Color.White);
         }
 
 
@@ -175,6 +177,12 @@ namespace Platform_game
                 {
                     shield += 1;
                 }
+                //int ran = random.Next(0, 3);
+                //if (ran == 0)
+                //{
+                    int CloudStartPosition = random.Next(0, GraphicsDevice.Viewport.Height-105);
+                    Clouds.Add(new Moveythingy(Content.Load<Texture2D>("cloud1"), new Vector2(-130, CloudStartPosition), Color.White));
+                //}
                 
             }
 
@@ -299,78 +307,59 @@ namespace Platform_game
             if (Alive && Gamestart)
             {
                
+                for (int i = 0; i < Clouds.Count; i ++)
+                {
+                    
+                    Clouds[i].MoveDown(0);
+                    Clouds[i].MoveRight(5);
+                    if (Clouds[i].position.Y+Clouds[i].hitbox.Height>GraphicsDevice.Viewport.Height-75)
+                    {
+                        Clouds.Remove(Clouds[i]);
+                        break;
+                    }
+                    if (Clouds[i].position.X > GraphicsDevice.Viewport.Width)
+                    {
+                        Clouds.Remove(Clouds[i]);
+                    }
+                    
+                }
+
                 player.UpdateotherHitbox();
                 for (int i = 0; i < enemy.Count; i++)
                 {
                     enemy[i].UpdateHitbox();
                 }
-                if (ks.IsKeyDown(Keys.Q) && prevks.IsKeyUp(Keys.Q))
-                {
-                    for (int i = 0; i < GraphicsDevice.Viewport.Width;i+=20)
-                    {
-                        platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(i, GraphicsDevice.Viewport.Height), Color.White, 1, true, 1, true));
-                    }
-                }
-                /*if (ks.IsKeyDown(Keys.Q) && prevks.IsKeyUp(Keys.Q))
-                {
-                    platform.Clear();
-                    for (int i = 0; i < 10; i++)
-                    {
-                        int ranx = random.Next(0, GraphicsDevice.Viewport.Width);
-                        int rany = random.Next(0, GraphicsDevice.Viewport.Height);
-                        int ranp = random.Next(0, 2);
-                        if (ranp == 1)
-                        {
-                            platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(ranx, rany), Color.White, 1, false, 1, true));
-                        }
-                        else
-                        {
-                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(ranx, rany), Color.White, 1, true, 1, true));
-                        }
-                    }
-                    int ranpx = random.Next(0, GraphicsDevice.Viewport.Width);
-                    int ranpy = random.Next(0, GraphicsDevice.Viewport.Height);
-                    player.position.X = ranpx;
-                    player.position.Y = ranpy;
-                    if (enemy.Count > 0)
-                    {
-                        for (int i = 0; i < enemy.Count; i++)
-                        {
-                            int ranex = random.Next(0, GraphicsDevice.Viewport.Width);
-                            int raney = random.Next(0, GraphicsDevice.Viewport.Height);
-                            enemy[i].position.X = ranex;
-                            enemy[i].position.Y = raney;
-                        }
-                    }
-                        //platformspawn = false;
-                }*/
+                //if (ks.IsKeyDown(Keys.Q) && prevks.IsKeyUp(Keys.Q))
+                //{
+                    
+                //}
+                
                 if (ks.IsKeyDown(Keys.RightShift)&&prevks.IsKeyUp(Keys.RightShift))
                 {
                     platform.Clear();
                 }
-                if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift) /*&& platformspawn == false*/)
+                if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift))
                 {
 
                     if (ks.IsKeyDown(Keys.Down))
                     {
-                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y + player.hitbox.Height), Color.White, 1, false, 1, false));
+                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y + player.hitbox.Height), Color.White, 1, false, 1, false, false));
                     }
                     else if (IsPlayerMoving == false && ks.IsKeyUp(Keys.Left) && ks.IsKeyUp(Keys.Right))
                     {
-                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y - player.hitbox.Height), Color.White, 1, false, 1, false));
+                        platform.Add(new Platform(Content.Load<Texture2D>("platform"), new Vector2(player.position.X, player.position.Y - player.hitbox.Height), Color.White, 1, false, 1, false, false));
                     }
                     else
                     {
                         if (ks.IsKeyDown(Keys.Left))
                         {
-                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X - player.hitbox.Width, player.position.Y), Color.White, 1, true, 1, false));
+                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X - player.hitbox.Width, player.position.Y), Color.White, 1, true, 1, false, false));
                         }
                         if (ks.IsKeyDown(Keys.Right))
                         {
-                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X + player.hitbox.Width * 2, player.position.Y), Color.White, 1, true, 1, false));
+                            platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(player.position.X + player.hitbox.Width * 2, player.position.Y), Color.White, 1, true, 1, false, false));
                         }
                     } 
-                    //platformspawn = true;
                 }
                 IsPlayerMoving = false;
                 if (ks.IsKeyDown(Keys.Right) && launched == false && playermoveright)
@@ -498,6 +487,13 @@ namespace Platform_game
                     if (platform[i].DoMove)
                     {
                         platform[i].Move();
+                        if (platform[i].BossPlatforms)
+                        {
+                            if (platform[i].position.Y < GraphicsDevice.Viewport.Height-75)
+                            {
+                                platform[i].DoMove = false;
+                            }
+                        }
                         if (platform[i].OnSide)
                         {
                             if (platform[i].position.Y < 0 || platform[i].position.Y > GraphicsDevice.Viewport.Height)
@@ -792,12 +788,24 @@ namespace Platform_game
                 {
                     Alive = false;
                 }
-
-
+                if (BossFight&&BossPlatformsSpawned==false)
+                {
+                    for (int i = 0; i < GraphicsDevice.Viewport.Width; i += 20)
+                    {
+                        platform.Add(new Platform(Content.Load<Texture2D>("sidePlatform"), new Vector2(i, GraphicsDevice.Viewport.Height), Color.White, 1, true, 1, true, true));
+                    }
+                    BossPlatformsSpawned = true;
+                }
+                if (BossFight==false&&BossPlatformsSpawned==true)
+                {
+                    platform.Clear();
+                    BossPlatformsSpawned = false;
+                }
                 boss.SmallHitbox();
                 if (BossFight)
                 {
 
+                    
                     if (enemy.Count == 0)
                     {
                         boss.position.Y = GraphicsDevice.Viewport.Height - 395;
@@ -1042,6 +1050,10 @@ namespace Platform_game
             if (Alive && Gamestart)
             {
                 Background.Draw(spriteBatch);
+                for (int i = 0; i < Clouds.Count;i++)
+                {
+                    Clouds[i].Draw(spriteBatch);
+                }
                 if (boss.Left)
                 {
                     boss.Draw(spriteBatch, Content.Load<Texture2D>("BossL"), bosscolor);

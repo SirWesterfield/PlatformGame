@@ -25,6 +25,18 @@
 /processorParam:TextureFormat=Color
 /build:background.jpg
 
+#begin BackgroundPlatform.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:BackgroundPlatform.jpg
+
 #begin BossL.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -72,6 +84,18 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:BoxR.png
+
+#begin cloud1.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:cloud1.png
 
 #begin crate.png
 /importer:TextureImporter
