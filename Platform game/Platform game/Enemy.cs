@@ -8,8 +8,16 @@ using System.Threading.Tasks;
 
 namespace Platform_game
 {
-    class Snakeman : Sprite
+    class Enemy : Sprite
     {
+        public enum State
+        {
+            Follow,
+            Run
+        }
+
+        public State state = State.Follow;
+
         //public bool PlayerOnTop;
         public bool Left;
         public bool Right;
@@ -24,7 +32,8 @@ namespace Platform_game
         Rectangle bigHitbox;
         public Rectangle otherHitbox;
         public bool OnPlatform;
-        public Snakeman(Texture2D image, Vector2 position, Color color, bool Left, bool Right, int upspeed, int downspeed, bool move, bool attack, bool OnPlatform)
+        public bool InPlayerArea;
+        public Enemy(Texture2D image, Vector2 position, Color color, bool Left, bool Right, int upspeed, int downspeed, bool move, bool attack, bool OnPlatform, bool InPlayerArea)
             :base(image,position,color)
         {
             this.Left = Left;
@@ -34,10 +43,15 @@ namespace Platform_game
             this.move = move;
             this.attack = attack;
             this.OnPlatform = OnPlatform;
-           //this.PlayerOnTop = PlayerOnTop;
+            this.InPlayerArea = InPlayerArea;
         }
         public void Sides(int screensize)
         {
+            //if(state == State.Follow)
+            //{
+              //  state = State.Stand;
+            //}
+
             if (position.X <= 0&&Right == false)
             {
                 Right = true;

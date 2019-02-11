@@ -11,6 +11,7 @@ namespace Platform_game
     class Player : Sprite
     {
         public Rectangle otherHitbox;
+        public Rectangle BiggerotherHitbox;
         public Player(Texture2D image, Vector2 position, Color color)
             :base(image, position, color)
         {
@@ -65,11 +66,13 @@ namespace Platform_game
                 return false;
             }
         }
-        public bool UpdateotherHitbox ()
+        public void UpdateotherHitbox ()
         {
             otherHitbox = hitbox;
-            otherHitbox.Y = hitbox.Y + 11; 
-            return false;
+            otherHitbox.Y = hitbox.Y + 11;
+
+            BiggerotherHitbox = otherHitbox;
+
         }
 
     }

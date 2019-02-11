@@ -65,6 +65,11 @@ namespace Platform_game
             }
         }
 
+        public void MoveDown (int MoveSpeedzz)
+        {
+            position.Y += MoveSpeedzz;
+        }
+
         public void Draw2(SpriteBatch spritebatch, Texture2D image)
         {
             spritebatch.Draw(image, position, color);

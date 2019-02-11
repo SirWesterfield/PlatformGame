@@ -55,7 +55,7 @@
     <Compile Include="PlayerSprite.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Snakeman.cs" />
+    <Compile Include="Enemy.cs" />
     <Compile Include="Sprite.cs" />
   </ItemGroup>
   <ItemGroup>
