@@ -573,11 +573,19 @@ namespace Platform_game
                     int ran = random.Next(0, 21);
                     if (ran < 8)
                     {
+<<<<<<< HEAD
                         enemy.Add(new Enemy(Content.Load<Texture2D>("PlayerL"), new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height - 110), Color.White, false, false, -25, 20, true, false, false, false));
                     }
                     if (ran >= 3 && ran <= 17)
                     {
                         enemy.Add(new Enemy(Content.Load<Texture2D>("PlayerR"), new Vector2(0, GraphicsDevice.Viewport.Height - 110), Color.White, false, false, -25, 20, true, false, false, false));
+=======
+                        enemy.Add(new Enemy(Content.Load<Texture2D>("PlayerL"), new Vector2(GraphicsDevice.Viewport.Width, GraphicsDevice.Viewport.Height - 110), Color.White, true, false, -25, 20, true, false, false, false));
+                    }
+                    if (ran >= 3 && ran <= 17)
+                    {
+                        enemy.Add(new Enemy(Content.Load<Texture2D>("PlayerR"), new Vector2(0, GraphicsDevice.Viewport.Height - 110), Color.White, false, true, -25, 20, true, false, false, false));
+>>>>>>> 712ce9998d453a8dbc039cd7a7fef61edff11243
                     }
                     if (ran == 18)
                     {
@@ -599,7 +607,10 @@ namespace Platform_game
                     {
                         enemy[i].jumping = true;
                         enemy[i].downspeed = 0;
+<<<<<<< HEAD
                         enemy[i].upspeed = -25;
+=======
+>>>>>>> 712ce9998d453a8dbc039cd7a7fef61edff11243
                         enemy[i].ground = false;
                     }
                     if (enemy[i].DownyDown())
@@ -629,7 +640,20 @@ namespace Platform_game
                         enemy[i].upspeed = -25;
                         enemy[i].jumping = false;
                     }
+<<<<<<< HEAD
                     
+=======
+                    if (player.hitbox.X < enemy[i].hitbox.X && enemy[i].Right&&!enemy[i].InPlayerArea)
+                    {
+                        enemy[i].Right = false;
+                        enemy[i].Left = true;
+                    }
+                    if (player.hitbox.X > enemy[i].hitbox.X && enemy[i].Left&&!enemy[i].InPlayerArea)
+                    {
+                        enemy[i].Right = true;
+                        enemy[i].Left = false;
+                    }
+>>>>>>> 712ce9998d453a8dbc039cd7a7fef61edff11243
                     /*if (!enemy[i].otherHit(player.otherHitbox))
                     {
                         enemy[i].move = true;
@@ -664,6 +688,7 @@ namespace Platform_game
                         
                         
                         if (enemy[i].hit(platform[p].RightSide)&&enemy[i].Right)
+<<<<<<< HEAD
                         {
                             enemy[i].move = false;
                         }
@@ -673,6 +698,17 @@ namespace Platform_game
                         }
                         else if (!enemy[i].hit(platform[p].hitbox))
                         {
+=======
+                        {
+                            enemy[i].move = false;
+                        }
+                        if (enemy[i].hit(platform[p].LeftSide)&&enemy[i].Left)
+                        {
+                            enemy[i].move = false;
+                        }
+                        else if (!enemy[i].hit(platform[p].hitbox))
+                        {
+>>>>>>> 712ce9998d453a8dbc039cd7a7fef61edff11243
                             enemy[i].move = true;
                         }
 
@@ -719,10 +755,15 @@ namespace Platform_game
                     }
 
                 }
+<<<<<<< HEAD
                 
                 for (int i = 0; i < enemy.Count; i++)
                 {
                     enemy[i].UpdateHitbox();
+=======
+                for (int i = 0; i < enemy.Count; i++)
+                {
+>>>>>>> 712ce9998d453a8dbc039cd7a7fef61edff11243
                     if (enemy[i].otherHit(player.hitbox))
                     {
                         enemy[i].InPlayerArea = true;
@@ -738,6 +779,7 @@ namespace Platform_game
                     }
                     if (enemy[i].state == Enemy.State.Follow)
                     {
+<<<<<<< HEAD
                         if (enemy[i].hitbox.X<player.hitbox.X)
                         {
                             enemy[i].Left = false;
@@ -761,6 +803,9 @@ namespace Platform_game
                             enemy[i].Right = true;
                             enemy[i].Left = false;
                         }
+=======
+
+>>>>>>> 712ce9998d453a8dbc039cd7a7fef61edff11243
                     }
                 }
                 for (int i = 0; i < plane.Count; i++)
@@ -1248,6 +1293,7 @@ namespace Platform_game
                
                 //spriteBatch.DrawString(font, "Health = " + health + "", new Vector2(100, GraphicsDevice.Viewport.Height - 40), Color.White);
                 spriteBatch.DrawString(font, "width = " + player.hitbox.Width + "", new Vector2(200, GraphicsDevice.Viewport.Height - 40), Color.White);
+<<<<<<< HEAD
                 spriteBatch.DrawString(font, "CloudDownSpeed = " + CLoudDownSpeed + "", new Vector2(300, GraphicsDevice.Viewport.Height - 40), Color.White);
                 if (enemy.Count > 0)
                 {
@@ -1255,6 +1301,9 @@ namespace Platform_game
                     spriteBatch.DrawString(font, "EnemyInPlayerArea = " + enemy[0].InPlayerArea + "", new Vector2(700, GraphicsDevice.Viewport.Height - 40), Color.White);
                 }
                 
+=======
+                spriteBatch.DrawString(font, "CloudDownSpeed = " + CLoudDownSpeed + "", new Vector2(200, GraphicsDevice.Viewport.Height - 60), Color.White);
+>>>>>>> 712ce9998d453a8dbc039cd7a7fef61edff11243
                 HealthBar.Draw(spriteBatch);
                 ShieldBar.Draw(spriteBatch);
 
