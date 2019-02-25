@@ -630,15 +630,7 @@ namespace Platform_game
                         enemy[i].jumping = false;
                     }
                     
-                    /*if (!enemy[i].otherHit(player.otherHitbox))
-                    {
-                        enemy[i].move = true;
-                    }
-                    if (!enemy[i].hit(player.hitbox)&&Ground)
-                    {
-                        enemy[i].downspeed = 0;
-                        enemy[i].ground = false;
-                    }*/
+                   
                     for (int p = 0; p < platform.Count; p++)
 
                     {
@@ -678,7 +670,7 @@ namespace Platform_game
 
                     }
                     
-                        health = 100;
+                        
                     if (enemy[i].Fire())
                     {
                         if (enemy[i].Left)
@@ -693,7 +685,7 @@ namespace Platform_game
                     }
                     for (int x = 0; x < fireball.Count; x++)
                     {
-                        if (enemy[i].otherHit(fireball[x].hitbox) && fireball[x].IsPLayer)
+                        if (enemy[i].BigHit(fireball[x].hitbox) && fireball[x].IsPLayer)
                         {
                             if (enemy[i].ground)
                             {
@@ -723,21 +715,21 @@ namespace Platform_game
                 for (int i = 0; i < enemy.Count; i++)
                 {
                     enemy[i].UpdateHitbox();
-                    if (enemy[i].otherHit(player.hitbox))
-                    {
-                        enemy[i].InPlayerArea = true;
-                    }
-                    if (enemy[i].InPlayerArea)
+                    if (enemy[i].BigHit(player.hitbox))
                     {
                         enemy[i].state = Enemy.State.Run;
                     }
+                    if (enemy[i].otherHit(player.hitbox)&&!enemy[i].BigHit(player.hitbox))
+                    {
+                        enemy[i].state = Enemy.State.Shoot;
+                    }
                     if (!enemy[i].otherHit(player.hitbox))
                     {
-                        enemy[i].InPlayerArea = false;
                         enemy[i].state = Enemy.State.Follow;
                     }
                     if (enemy[i].state == Enemy.State.Follow)
                     {
+                        enemy[i].move = true;
                         if (enemy[i].hitbox.X<player.hitbox.X)
                         {
                             enemy[i].Left = false;
@@ -751,12 +743,27 @@ namespace Platform_game
                     }
                     if (enemy[i].state == Enemy.State.Run)
                     {
+                        enemy[i].move = true;
                         if (enemy[i].hitbox.X < player.hitbox.X)
                         {
                             enemy[i].Left = true;
                             enemy[i].Right = false;
                         }
                         if (enemy[i].hitbox.X > player.hitbox.X)
+                        {
+                            enemy[i].Right = true;
+                            enemy[i].Left = false;
+                        }
+                    }
+                    if (enemy[i].state == Enemy.State.Shoot)
+                    {
+                        enemy[i].move = false;
+                        if (enemy[i].hitbox.X > player.hitbox.X)
+                        {
+                            enemy[i].Left = true;
+                            enemy[i].Right = false;
+                        }
+                        if (enemy[i].hitbox.X < player.hitbox.X)
                         {
                             enemy[i].Right = true;
                             enemy[i].Left = false;

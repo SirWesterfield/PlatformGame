@@ -13,12 +13,13 @@ namespace Platform_game
         public enum State
         {
             Follow,
-            Run
+            Run,
+            Shoot
+            
         }
 
         public State state = State.Follow;
 
-        //public bool PlayerOnTop;
         public bool Left;
         public bool Right;
         public bool ground;
@@ -27,7 +28,6 @@ namespace Platform_game
         public int downspeed;
         public bool move;
         public bool attack;
-        //public Rectangle BottomHitbox;
         public TimeSpan fireTime;
         Rectangle bigHitbox;
         public Rectangle otherHitbox;
@@ -109,10 +109,6 @@ namespace Platform_game
                 position.Y = screensize - hitbox.Height;
                 ground = true;
             }
-            if (hitbox.Intersects(otherHitbox))
-            {
-                ground = true;
-            }
         }
         public bool hit (Rectangle otherhitbox)
         {
@@ -126,7 +122,7 @@ namespace Platform_game
                 return false;
             }
         }
-        public bool otherHit(Rectangle otherhitbox)
+        public bool BigHit(Rectangle otherhitbox)
         {
             
             if (bigHitbox.Intersects(otherhitbox))
@@ -138,16 +134,30 @@ namespace Platform_game
                 return false;
             }
         }
+        
+        public bool otherHit(Rectangle hitboxother)
+        {
+            if (otherHitbox.Intersects(hitboxother))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
         public void UpdateHitbox ()
         {
             bigHitbox = hitbox;
             bigHitbox.Width += 250;
-            bigHitbox.X = hitbox.X - 90;
+            bigHitbox.X = hitbox.X - 125;
             bigHitbox.Height = hitbox.Height + 1000;
-            otherHitbox = hitbox;
-            otherHitbox.Y = hitbox.Y + 11;
-            otherHitbox.Height = hitbox.Height - 11;
-            
+            bigHitbox.Y = hitbox.Y - 500;
+
+            otherHitbox = bigHitbox;
+            otherHitbox.Width += 150;
+            otherHitbox.X -= 75;
             
             
         }
