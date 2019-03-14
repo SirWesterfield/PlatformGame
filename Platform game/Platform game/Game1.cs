@@ -138,7 +138,7 @@ namespace Platform_game
             ShieldBar = new Bars(Content.Load<Texture2D>("ShieldBar"), new Vector2(0, GraphicsDevice.Viewport.Height - 40), Color.White);
 
             BackgroundPlatform.Add(new Sprite(Content.Load<Texture2D>("BackgroundPlatform"), new Vector2(0, GraphicsDevice.Viewport.Height - 75), Color.White));
-            
+            BackgroundPlatform.Add(new Sprite(Content.Load<Texture2D>("BackgroundPlatform"), new Vector2(-1105, GraphicsDevice.Viewport.Height - 75), Color.White));
 
         }
 
@@ -390,7 +390,7 @@ namespace Platform_game
                     } 
                 }
                 IsPlayerMoving = false;
-                if (ks.IsKeyDown(Keys.Right) && launched == false && playermoveright)
+                if (ks.IsKeyDown(Keys.Right) && playermoveright && launched == false)
                 {
                     //player.MoveRight(GraphicsDevice.Viewport.Width, Rightspeed);
                     for (int i = 0; i < Clouds.Count; i++)
@@ -417,11 +417,15 @@ namespace Platform_game
                     {
                         BackgroundPlatform[i].position.X -= MoveSpeed;
                     }
+                    if (BossFight)
+                    {
+                        boss.position.X -= MoveSpeed;
+                    }
                     FacingLeft = false;
                     FacingRight = true;
                     IsPlayerMoving = true;
                 }
-                else if (ks.IsKeyDown(Keys.Left) && launched == false && playermoveleft)
+                else if (ks.IsKeyDown(Keys.Left) && playermoveleft && launched == false)
                 {
                     //player.MoveLeft(Leftspeed);
                     for (int i = 0;i<Clouds.Count;i++)
@@ -448,12 +452,43 @@ namespace Platform_game
                     {
                         BackgroundPlatform[i].position.X += MoveSpeed;
                     }
+                    if (BossFight)
+                    {
+                        boss.position.X += MoveSpeed;
+                    }
                     FacingLeft = true;
                     FacingRight = false;
                     IsPlayerMoving = true;
                 }
                 health = 100;
                 
+                for (int i = 0; i < BackgroundPlatform.Count;i++)
+                {
+                    if (FacingLeft&&BackgroundPlatform[i].position.X>GraphicsDevice.Viewport.Width)
+                    {
+                        if (i == 0)
+                        {
+                            BackgroundPlatform[i].position.X = BackgroundPlatform[1].position.X - BackgroundPlatform[i].hitbox.Width;
+                        }
+                        else
+                        {
+                            BackgroundPlatform[i].position.X = BackgroundPlatform[0].position.X - BackgroundPlatform[i].hitbox.Width;
+                        }
+                    }
+                    if (FacingRight&&BackgroundPlatform[i].position.X+BackgroundPlatform[i].hitbox.Width<0)
+                    {
+                        if (i == 0)
+                        {
+                            BackgroundPlatform[i].position.X = BackgroundPlatform[1].position.X + BackgroundPlatform[1].hitbox.Width;
+                        }
+                        else
+                        {
+                            BackgroundPlatform[i].position.X = BackgroundPlatform[0].position.X + BackgroundPlatform[0].hitbox.Width;
+                        }
+                    }
+                }
+
+
                 if (ks.IsKeyDown(Keys.W) && prevks.IsKeyUp(Keys.W))
                 {
                     TurretMovement *= -1;
@@ -665,11 +700,11 @@ namespace Platform_game
                     {
                         plane.Add(new FlyingEnemy(Content.Load<Texture2D>("planeL"), new Vector2(GraphicsDevice.Viewport.Width, 0), Color.White, true, false, 2));
                     }
-                    /*if (ran == 20)
+                    if (ran == 20)
                     {
                         BossFight = true;
                         BossMove = true;
-                    }*/
+                    }
                 }
                 
                 for (int i = 0; i < enemy.Count; i++)
@@ -1090,15 +1125,73 @@ namespace Platform_game
                 }
                 if (launchedTime < TimeSpan.FromMilliseconds(900) && launched == true)
                 {
-                    if (boss.Left)
-                    {
-                        player.MoveLeft(20);
-
-                    }
                     if (boss.Right)
                     {
-                        player.MoveRight(GraphicsDevice.Viewport.Width, 20);
-
+                        for (int i = 0; i < Clouds.Count; i++)
+                        {
+                            Clouds[i].MoveLeft(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < platform.Count; i++)
+                        {
+                            platform[i].MoveLeft(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < enemy.Count; i++)
+                        {
+                            enemy[i].othermoveLeft(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < fireball.Count; i++)
+                        {
+                            fireball[i].otherMoveLeft(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < Crate.Count; i++)
+                        {
+                            Crate[i].MoveLeft(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < BackgroundPlatform.Count; i++)
+                        {
+                            BackgroundPlatform[i].position.X -= MoveSpeed*2;
+                        }
+                        if (BossFight)
+                        {
+                            boss.position.X -= MoveSpeed*2;
+                        }
+                        FacingLeft = false;
+                        FacingRight = true;
+                        IsPlayerMoving = true;
+                    }
+                    if (boss.Left)
+                    {
+                        for (int i = 0; i < Clouds.Count; i++)
+                        {
+                            Clouds[i].MoveRight(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < platform.Count; i++)
+                        {
+                            platform[i].MoveRight(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < enemy.Count; i++)
+                        {
+                            enemy[i].othermoveRight(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < fireball.Count; i++)
+                        {
+                            fireball[i].otherMoveRight(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < Crate.Count; i++)
+                        {
+                            Crate[i].MoveRight(MoveSpeed*2);
+                        }
+                        for (int i = 0; i < BackgroundPlatform.Count; i++)
+                        {
+                            BackgroundPlatform[i].position.X += MoveSpeed*2;
+                        }
+                        if (BossFight)
+                        {
+                            boss.position.X += MoveSpeed*2;
+                        }
+                        FacingLeft = true;
+                        FacingRight = false;
+                        IsPlayerMoving = true;
                     }
                 }
                 else
