@@ -23,11 +23,11 @@ namespace Platform_game
         }
         public void MoveRight()
         {
-            position.X += 5;
+            position.X += 10;
         }
         public void MoveLeft()
         {
-            position.X -= 5;
+            position.X -= 10;
         }
         public bool fire()
         {

@@ -64,6 +64,14 @@ namespace Platform_game
                 position.X += Movedirection;
             }
         }
+        public void MoveLeft (int MoveSpeed)
+        {
+            position.X -= MoveSpeed;
+        }
+        public void MoveRight (int MoveSpeed)
+        {
+            position.X += MoveSpeed;
+        }
 
         public void MoveDown (int MoveSpeedzz)
         {

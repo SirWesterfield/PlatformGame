@@ -146,7 +146,14 @@ namespace Platform_game
                 return false;
             }
         }
-
+        public void othermoveLeft (int MoveSpeed)
+        {
+            position.X -= MoveSpeed;
+        }
+        public void othermoveRight (int MoveSpeed)
+        {
+            position.X += MoveSpeed;
+        }
         public void UpdateHitbox ()
         {
             bigHitbox = hitbox;

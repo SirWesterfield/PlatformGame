@@ -32,6 +32,14 @@ namespace Platform_game
             }
         }
 
+        public void MoveLeft(int MoveSpeed)
+        {
+            position.X -= MoveSpeed;
+        }
+        public void MoveRight(int MoveSpeed)
+        {
+            position.X += MoveSpeed;
+        }
 
         public void MoveDown (int screensize)
         {

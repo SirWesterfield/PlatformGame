@@ -31,6 +31,14 @@ namespace Platform_game
         {
             position.X += 10;
         }
+        public void otherMoveLeft(int MoveSpeed)
+        {
+            position.X -= MoveSpeed;
+        }
+        public void otherMoveRight(int MoveSpeed)
+        {
+            position.X += MoveSpeed;
+        }
         public void MoveDown()
         {
             position.Y += 10;
