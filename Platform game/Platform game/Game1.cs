@@ -88,7 +88,7 @@ namespace Platform_game
         bool IsPlayerMoving = true;
         bool playermoveleft = true;
         bool playermoveright = true;
-        //bool BossPlatformsInPosition = false;
+        bool BossPlatformsInPosition = false;
         int CLoudDownSpeed = 0;
         //bool OnEnemy = false;
         int TurretMovement = 1;
@@ -203,18 +203,7 @@ namespace Platform_game
                         Clouds.Add(new Moveythingy(Content.Load<Texture2D>("cloud1"), new Vector2(GraphicsDevice.Viewport.Width + 120, CloudStartPosition), Color.White));
                     }
                 }
-                /*if (!BossPlatformsInPosition)
-                {
-                    int CloudStartPosition = random.Next(0, GraphicsDevice.Viewport.Height - 105);
-                    Clouds.Add(new Moveythingy(Content.Load<Texture2D>("cloud1"), new Vector2(-130, CloudStartPosition), Color.White));
-                }
-                else
-                {
-                    int CloudStartPosition = random.Next(0, GraphicsDevice.Viewport.Width - 105);
-                    Clouds.Add(new Moveythingy(Content.Load<Texture2D>("cloud1"), new Vector2(CloudStartPosition, -150), Color.White));
-                    
-                    CLoudDownSpeed++;
-                }*/
+                
             }
 
             
@@ -365,7 +354,13 @@ namespace Platform_game
                 }
                 if (ks.IsKeyDown(Keys.RightShift)&&prevks.IsKeyUp(Keys.RightShift))
                 {
-                    platform.Clear();
+                    for (int i = 0; i < platform.Count; i ++)
+                    {
+                        if (!platform[i].BossPlatforms)
+                        {
+                            platform.Remove(platform[i]);
+                        }
+                    }
                 }
                 if (ks.IsKeyDown(Keys.LeftShift) && prevks.IsKeyUp(Keys.LeftShift))
                 {
@@ -420,6 +415,11 @@ namespace Platform_game
                     if (BossFight)
                     {
                         boss.position.X -= MoveSpeed;
+                        bossfirelocation -= MoveSpeed;
+                        for (int i = 0;i<Warning.Count;i++)
+                        {
+                            Warning[i].position.X -= MoveSpeed;
+                        }
                     }
                     FacingLeft = false;
                     FacingRight = true;
@@ -455,12 +455,17 @@ namespace Platform_game
                     if (BossFight)
                     {
                         boss.position.X += MoveSpeed;
+                        bossfirelocation += MoveSpeed;
+                        for (int i = 0; i < Warning.Count; i++)
+                        {
+                            Warning[i].position.X += MoveSpeed;
+                        }
                     }
                     FacingLeft = true;
                     FacingRight = false;
                     IsPlayerMoving = true;
                 }
-                health = 100;
+                
                 
                 for (int i = 0; i < BackgroundPlatform.Count;i++)
                 {
@@ -506,10 +511,13 @@ namespace Platform_game
                         TurretFaceRight = true;
                     }
                 }
-                if (player.position.Y + player.hitbox.Height >= GraphicsDevice.Viewport.Height - 70)
+                if (!BossPlatformsInPosition)
                 {
-                    Ground = true;
-                    player.position.Y = GraphicsDevice.Viewport.Height - player.hitbox.Height - 70;
+                    if (player.position.Y + player.hitbox.Height >= GraphicsDevice.Viewport.Height - 70)
+                    {
+                        Ground = true;
+                        player.position.Y = GraphicsDevice.Viewport.Height - player.hitbox.Height - 70;
+                    }
                 }
                 if (Jumping == false && Ground == false)
                 {
@@ -610,7 +618,7 @@ namespace Platform_game
                             if (platform[i].position.Y < GraphicsDevice.Viewport.Height-75)
                             {
                                 platform[i].DoMove = false;
-                                //BossPlatformsInPosition = true;
+                                BossPlatformsInPosition = true;
                             }
                         }
                         if (platform[i].OnSide)
@@ -656,6 +664,10 @@ namespace Platform_game
                         }
                         
                     }
+                    if (player.position.Y>10000)
+                    {
+                        Alive = false;
+                    }
                     if (player.Hit(platform[i].RightSide))
                     {
                         playermoveright = false;
@@ -700,11 +712,12 @@ namespace Platform_game
                     {
                         plane.Add(new FlyingEnemy(Content.Load<Texture2D>("planeL"), new Vector2(GraphicsDevice.Viewport.Width, 0), Color.White, true, false, 2));
                     }
-                    if (ran == 20)
+                    /*if (ran == 20)
                     {
                         BossFight = true;
                         BossMove = true;
-                    }
+                    }*/
+                    
                 }
                 
                 for (int i = 0; i < enemy.Count; i++)
@@ -1006,7 +1019,7 @@ namespace Platform_game
                     if (Bossplatfromscount==0)
                     {
                         BossPlatformsSpawned = false;
-                        //BossPlatformsInPosition = false;
+                        BossPlatformsInPosition = false;
                     }
                     Bossplatfromscount = 0;
                     CLoudDownSpeed = 0;
@@ -1057,7 +1070,7 @@ namespace Platform_game
                             }
                         }
                     }
-                    boss.Sides(GraphicsDevice.Viewport.Width);
+                    //boss.Sides(GraphicsDevice.Viewport.Width);
                     if (BossMove)
                     {
                         if (boss.Right)
@@ -1115,6 +1128,37 @@ namespace Platform_game
 
 
                 }
+                if (BossPlatformsInPosition)
+                {
+                    if (BackgroundPlatform[0].position.Y < 1000)
+                    {
+                        for (int i = 0; i < BackgroundPlatform.Count; i++)
+                        {
+                            BackgroundPlatform[i].position.Y += MoveSpeed;
+                        }
+                    }
+                    for (int i = 0; i < platform.Count; i++)
+                    {
+                        if (!platform[i].BossPlatforms)
+                        {
+                            platform[i].position.Y += MoveSpeed;
+                        }
+                    }
+                    for (int i = 0; i < Clouds.Count; i++)
+                    {
+                        Clouds[i].position.Y += MoveSpeed;
+                    }
+                }
+                else
+                {
+                    if (BackgroundPlatform[0].position.Y != GraphicsDevice.Viewport.Height - 75)
+                    {
+                        for (int i = 0; i < BackgroundPlatform.Count; i++)
+                        {
+                            BackgroundPlatform[i].position.Y -= MoveSpeed;
+                        }
+                    }
+                }
                 if (BossFight)
                 {
                     BossMove = true;
@@ -1154,6 +1198,11 @@ namespace Platform_game
                         if (BossFight)
                         {
                             boss.position.X -= MoveSpeed*2;
+                            bossfirelocation -= MoveSpeed * 2;
+                            for (int i = 0; i < Warning.Count; i++)
+                            {
+                                Warning[i].position.X -= MoveSpeed*2;
+                            }
                         }
                         FacingLeft = false;
                         FacingRight = true;
@@ -1188,6 +1237,11 @@ namespace Platform_game
                         if (BossFight)
                         {
                             boss.position.X += MoveSpeed*2;
+                            bossfirelocation += MoveSpeed * 2;
+                            for (int i = 0; i < Warning.Count; i++)
+                            {
+                                Warning[i].position.X += MoveSpeed*2;
+                            }
                         }
                         FacingLeft = true;
                         FacingRight = false;
@@ -1252,7 +1306,7 @@ namespace Platform_game
                         break;
                     }
                 }
-
+                
                 if (FacingLeft)
                 {
                     TurretL.position = player.position;
@@ -1269,7 +1323,7 @@ namespace Platform_game
 
                 LegsR.position = player.position;
                 LegsL.position = player.position;
-
+                
                 if (shield > 100)
                 {
                     shield = 100;
@@ -1321,10 +1375,12 @@ namespace Platform_game
                 {
                     Clouds[i].Draw(spriteBatch);
                 }
-                for (int i = 0; i < BackgroundPlatform.Count; i++)
-                {
-                    BackgroundPlatform[i].Draw(spriteBatch);
-                }
+              
+                    for (int i = 0; i < BackgroundPlatform.Count; i++)
+                    {
+                        BackgroundPlatform[i].Draw(spriteBatch);
+                    }
+                
                 if (boss.Left)
                 {
                     boss.Draw(spriteBatch, Content.Load<Texture2D>("BossL"), bosscolor);
@@ -1500,3 +1556,4 @@ namespace Platform_game
         }
     }
 }
+//oink

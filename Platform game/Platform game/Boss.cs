@@ -53,6 +53,7 @@ namespace Platform_game
         public void SmallHitbox()
         {
             smallHitbox = hitbox;
+            smallHitbox.Y = hitbox.Y + 10;
             if (Right)
             {
                 smallHitbox.Width = 100;
@@ -61,7 +62,7 @@ namespace Platform_game
             if (Left)
             {
                 smallHitbox.Width = 100;
-                smallHitbox.X = hitbox.X + 117;
+                smallHitbox.X = hitbox.X+10;
             }
         }
         public bool otherHit(Rectangle otherhitbox)
