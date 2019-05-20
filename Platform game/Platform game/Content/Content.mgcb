@@ -37,6 +37,18 @@
 /processorParam:TextureFormat=Color
 /build:BackgroundPlatform.jpg
 
+#begin blue portal.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:blue portal.png
+
 #begin BossL.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -72,18 +84,6 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:BoxR.png
-
-#begin Character Sprite-1.png
-/importer:TextureImporter
-/processor:TextureProcessor
-/processorParam:ColorKeyColor=255,0,255,255
-/processorParam:ColorKeyEnabled=True
-/processorParam:GenerateMipmaps=False
-/processorParam:PremultiplyAlpha=True
-/processorParam:ResizeToPowerOfTwo=False
-/processorParam:MakeSquare=False
-/processorParam:TextureFormat=Color
-/build:Character Sprite-1.png
 
 #begin cloud1.png
 /importer:TextureImporter
@@ -296,6 +296,18 @@
 /processorParam:TextureFormat=Color
 /build:playerR.png
 
+#begin Saw Blade.png
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Saw Blade.png
+
 #begin ShieldBar.png
 /importer:TextureImporter
 /processor:TextureProcessor
@@ -367,4 +379,16 @@
 /processorParam:MakeSquare=False
 /processorParam:TextureFormat=Color
 /build:Warning.png
+
+#begin Win Screen.jpg
+/importer:TextureImporter
+/processor:TextureProcessor
+/processorParam:ColorKeyColor=255,0,255,255
+/processorParam:ColorKeyEnabled=True
+/processorParam:GenerateMipmaps=False
+/processorParam:PremultiplyAlpha=True
+/processorParam:ResizeToPowerOfTwo=False
+/processorParam:MakeSquare=False
+/processorParam:TextureFormat=Color
+/build:Win Screen.jpg
 

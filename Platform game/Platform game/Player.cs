@@ -22,18 +22,26 @@ namespace Platform_game
         {
             spritebatch.Draw(player, position, chromatic);
         }
-        public void MoveRight (int screensize, int movespeed)
+        public void MoveRight (int movespeed, int screensize)
         {
             if (position.X + hitbox.Width < screensize)
             {
                 position.X += movespeed;
+            }
+            else
+            {
+                position.X = screensize - hitbox.Width;
             }
         }
         public void MoveLeft(int movesspeed)
         {
             if (position.X > 0)
             {
-                position.X -= movesspeed;
+               position.X -= movesspeed;
+            }
+            else
+            {
+                position.X = 0;
             }
         }
         public void MoveUp(int Movespeed)

@@ -41,11 +41,11 @@ namespace Platform_game
             position.X += MoveSpeed;
         }
 
-        public void MoveDown (int screensize)
+        public void MoveDown (float screensize)
         {
             if (position.Y+hitbox.Height < screensize)
             {
-                position.Y += 30;
+                position.Y += 20;
             }
             if (position.Y+hitbox.Height>screensize)
             {

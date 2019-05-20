@@ -45,13 +45,8 @@ namespace Platform_game
             this.OnPlatform = OnPlatform;
             this.InPlayerArea = InPlayerArea;
         }
-        public void Sides(int screensize)
+        /*public void Sides(int screensize)
         {
-            //if(state == State.Follow)
-            //{
-              //  state = State.Stand;
-            //}
-
             if (position.X <= 0&&Right == false)
             {
                 
@@ -62,7 +57,7 @@ namespace Platform_game
                 
                 Right = false;
             }
-        }
+        }*/
         public bool Fire()
         {
             if (fireTime > TimeSpan.FromMilliseconds(1000))
@@ -104,9 +99,9 @@ namespace Platform_game
         }
         public void Ground (int screensize, Rectangle otherHitbox)
         {
-            if (hitbox.Y +hitbox.Height > screensize&&jumping == false)
+            if (hitbox.Intersects(otherHitbox)&&jumping == false)
             {
-                position.Y = screensize - hitbox.Height;
+                position.Y = otherHitbox.Y - hitbox.Height;
                 ground = true;
             }
         }
